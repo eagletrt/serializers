@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bar;
+
+message MySmallMessage
+{
+    int64 val = 1;
+}
+
+message MyMessage
+{
+    double val = 1;
+    string str = 2;
+    repeated MySmallMessage vec = 3;
+    map<uint32, string> mp = 4;
+}
