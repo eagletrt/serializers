@@ -1,0 +1,33 @@
+#ifndef BAR_HPP
+#define BAR_HPP
+
+#include "bar.pb.h"
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+namespace serializers
+{
+{% for message in messages %}
+struct {{ message.name }}
+{
+    {% for element in message.elements %}
+    {{ element.type }} {{ element.name }};
+    {% endfor %}
+
+    {{ message.name }}() = default;
+    {{ message.name }}(const bar::{{ message.name }}& proto);
+    operator bar::{{ message.name }}() const;
+
+    std::string serializeAsProtobufString() const;
+    std::string serializeAsJsonString() const;
+    bool deserializeFromProtobufString(const std::string& str);
+    bool deserializeFromJsonString(const std::string& str);
+};
+
+{% endfor %}
+}
+
+#endif
