@@ -10,7 +10,7 @@
 
 namespace Serializers
 {
-enum MyEnum
+enum class MyEnum
 {
     MY_ENUM_0 = 0,
     My_ENUM_1 = 1
