@@ -30,7 +30,7 @@ def get_package(file_elements: list[FileElement]) -> Package:
 
 def set_correct_type(field: MessageElement) -> None:
     if isinstance(field, MapField):
-        setattr(field, "type", f"std::map<{__typeof(field.key_type)}, {__typeof(field.value_type)}>")
+        setattr(field, "type", f"std::unordered_map<{__typeof(field.key_type)}, {__typeof(field.value_type)}>")
     elif isinstance(field, Field) and field.cardinality == FieldCardinality.REPEATED:
         field.type = f"std::vector<{__typeof(field.type)}>"
     else:
