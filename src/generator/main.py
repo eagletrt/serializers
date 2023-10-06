@@ -29,18 +29,18 @@ if __name__ == "__main__":
 
         with open(os.path.join(args.proto_dir, filename), "r") as f:
             schema = Parser().parse(f.read())
+            package = proto_utils.get_package(schema.file_elements)
             messages = list(filter(lambda e: isinstance(e, Message), schema.file_elements))
             print(schema)
 
-            package = proto_utils.get_package(messages)
-
-            if package is not None:
-                schema.file_elements.pop(package)
+            if package is None:
+                print("No package found for file {filename}, aborting")
+                exit(1)
 
             for message in list(filter(lambda e: isinstance(e, Message),schema.file_elements)):
                 for field in message.elements:
                     proto_utils.set_correct_type(field)
 
-            with open(os.path.join(args.output_dir, f"{filename}.h"), "w") as f:
+            with open(os.path.join(args.output_dir, "inc", f"{package.name}.h"), "w") as f:
                 f.write(cpp_template.render(messages=messages, package=package))
 
