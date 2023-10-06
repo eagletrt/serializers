@@ -34,6 +34,7 @@
 #include <google/protobuf/map.h>  // IWYU pragma: export
 #include <google/protobuf/map_entry.h>
 #include <google/protobuf/map_field_inl.h>
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -75,6 +76,31 @@ template<> ::bar::MySmallMessage* Arena::CreateMaybeMessage<::bar::MySmallMessag
 PROTOBUF_NAMESPACE_CLOSE
 namespace bar {
 
+enum MyEnum : int {
+  MY_ENUM_0 = 0,
+  My_ENUM_1 = 1,
+  MyEnum_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
+  MyEnum_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
+};
+bool MyEnum_IsValid(int value);
+constexpr MyEnum MyEnum_MIN = MY_ENUM_0;
+constexpr MyEnum MyEnum_MAX = My_ENUM_1;
+constexpr int MyEnum_ARRAYSIZE = MyEnum_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MyEnum_descriptor();
+template<typename T>
+inline const std::string& MyEnum_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, MyEnum>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function MyEnum_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    MyEnum_descriptor(), enum_t_value);
+}
+inline bool MyEnum_Parse(
+    const std::string& name, MyEnum* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MyEnum>(
+    MyEnum_descriptor(), name, value);
+}
 // ===================================================================
 
 class MySmallMessage PROTOBUF_FINAL :
@@ -360,12 +386,13 @@ class MyMessage PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kVecFieldNumber = 3,
-    kMpFieldNumber = 4,
+    kVecFieldNumber = 4,
+    kMpFieldNumber = 5,
     kStrFieldNumber = 2,
     kValFieldNumber = 1,
+    kEnmFieldNumber = 3,
   };
-  // repeated .bar.MySmallMessage vec = 3;
+  // repeated .bar.MySmallMessage vec = 4;
   int vec_size() const;
   private:
   int _internal_vec_size() const;
@@ -383,7 +410,7 @@ class MyMessage PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
       vec() const;
 
-  // map<uint32, string> mp = 4;
+  // map<uint32, string> mp = 5;
   int mp_size() const;
   private:
   int _internal_mp_size() const;
@@ -434,6 +461,15 @@ class MyMessage PROTOBUF_FINAL :
   void _internal_set_val(double value);
   public:
 
+  // .bar.MyEnum enm = 3;
+  void clear_enm();
+  ::bar::MyEnum enm() const;
+  void set_enm(::bar::MyEnum value);
+  private:
+  ::bar::MyEnum _internal_enm() const;
+  void _internal_set_enm(::bar::MyEnum value);
+  public:
+
   // @@protoc_insertion_point(class_scope:bar.MyMessage)
  private:
   class _Internal;
@@ -450,6 +486,7 @@ class MyMessage PROTOBUF_FINAL :
       0 > mp_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
   double val_;
+  int enm_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bar_2eproto;
 };
@@ -591,7 +628,27 @@ inline void MyMessage::unsafe_arena_set_allocated_str(
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:bar.MyMessage.str)
 }
 
-// repeated .bar.MySmallMessage vec = 3;
+// .bar.MyEnum enm = 3;
+inline void MyMessage::clear_enm() {
+  enm_ = 0;
+}
+inline ::bar::MyEnum MyMessage::_internal_enm() const {
+  return static_cast< ::bar::MyEnum >(enm_);
+}
+inline ::bar::MyEnum MyMessage::enm() const {
+  // @@protoc_insertion_point(field_get:bar.MyMessage.enm)
+  return _internal_enm();
+}
+inline void MyMessage::_internal_set_enm(::bar::MyEnum value) {
+  
+  enm_ = value;
+}
+inline void MyMessage::set_enm(::bar::MyEnum value) {
+  _internal_set_enm(value);
+  // @@protoc_insertion_point(field_set:bar.MyMessage.enm)
+}
+
+// repeated .bar.MySmallMessage vec = 4;
 inline int MyMessage::_internal_vec_size() const {
   return vec_.size();
 }
@@ -630,7 +687,7 @@ MyMessage::vec() const {
   return vec_;
 }
 
-// map<uint32, string> mp = 4;
+// map<uint32, string> mp = 5;
 inline int MyMessage::_internal_mp_size() const {
   return mp_.size();
 }
@@ -670,6 +727,16 @@ MyMessage::mutable_mp() {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bar
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::bar::MyEnum> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::bar::MyEnum>() {
+  return ::bar::MyEnum_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 

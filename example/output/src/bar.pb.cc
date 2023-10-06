@@ -74,7 +74,7 @@ static void InitDefaultsscc_info_MySmallMessage_bar_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_MySmallMessage_bar_2eproto}, {}};
 
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_bar_2eproto[3];
-static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_bar_2eproto = nullptr;
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_bar_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_bar_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_bar_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -100,6 +100,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_bar_2eproto::offsets[] PROTOBU
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, val_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, str_),
+  PROTOBUF_FIELD_OFFSET(::bar::MyMessage, enm_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, vec_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, mp_),
 };
@@ -117,11 +118,12 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_bar_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\tbar.proto\022\003bar\"\035\n\016MySmallMessage\022\013\n\003va"
-  "l\030\001 \001(\003\"\226\001\n\tMyMessage\022\013\n\003val\030\001 \001(\001\022\013\n\003st"
-  "r\030\002 \001(\t\022 \n\003vec\030\003 \003(\0132\023.bar.MySmallMessag"
-  "e\022\"\n\002mp\030\004 \003(\0132\026.bar.MyMessage.MpEntry\032)\n"
-  "\007MpEntry\022\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\t:\0028\001"
-  "b\006proto3"
+  "l\030\001 \001(\003\"\260\001\n\tMyMessage\022\013\n\003val\030\001 \001(\001\022\013\n\003st"
+  "r\030\002 \001(\t\022\030\n\003enm\030\003 \001(\0162\013.bar.MyEnum\022 \n\003vec"
+  "\030\004 \003(\0132\023.bar.MySmallMessage\022\"\n\002mp\030\005 \003(\0132"
+  "\026.bar.MyMessage.MpEntry\032)\n\007MpEntry\022\013\n\003ke"
+  "y\030\001 \001(\r\022\r\n\005value\030\002 \001(\t:\0028\001*&\n\006MyEnum\022\r\n\t"
+  "MY_ENUM_0\020\000\022\r\n\tMy_ENUM_1\020\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_bar_2eproto_deps[1] = {
 };
@@ -132,7 +134,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_bar
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_bar_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_bar_2eproto = {
-  false, false, descriptor_table_protodef_bar_2eproto, "bar.proto", 208,
+  false, false, descriptor_table_protodef_bar_2eproto, "bar.proto", 274,
   &descriptor_table_bar_2eproto_once, descriptor_table_bar_2eproto_sccs, descriptor_table_bar_2eproto_deps, 3, 0,
   schemas, file_default_instances, TableStruct_bar_2eproto::offsets,
   file_level_metadata_bar_2eproto, 3, file_level_enum_descriptors_bar_2eproto, file_level_service_descriptors_bar_2eproto,
@@ -141,6 +143,20 @@ const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_bar_2e
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_bar_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_bar_2eproto)), true);
 namespace bar {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MyEnum_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_bar_2eproto);
+  return file_level_enum_descriptors_bar_2eproto[0];
+}
+bool MyEnum_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 // ===================================================================
 
@@ -382,14 +398,18 @@ MyMessage::MyMessage(const MyMessage& from)
     str_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_str(),
       GetArena());
   }
-  val_ = from.val_;
+  ::memcpy(&val_, &from.val_,
+    static_cast<size_t>(reinterpret_cast<char*>(&enm_) -
+    reinterpret_cast<char*>(&val_)) + sizeof(enm_));
   // @@protoc_insertion_point(copy_constructor:bar.MyMessage)
 }
 
 void MyMessage::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_MyMessage_bar_2eproto.base);
   str_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  val_ = 0;
+  ::memset(&val_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&enm_) -
+      reinterpret_cast<char*>(&val_)) + sizeof(enm_));
 }
 
 MyMessage::~MyMessage() {
@@ -427,7 +447,9 @@ void MyMessage::Clear() {
   vec_.Clear();
   mp_.Clear();
   str_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  val_ = 0;
+  ::memset(&val_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&enm_) -
+      reinterpret_cast<char*>(&val_)) + sizeof(enm_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -455,28 +477,36 @@ const char* MyMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // repeated .bar.MySmallMessage vec = 3;
+      // .bar.MyEnum enm = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_enm(static_cast<::bar::MyEnum>(val));
+        } else goto handle_unusual;
+        continue;
+      // repeated .bar.MySmallMessage vec = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(_internal_add_vec(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
         } else goto handle_unusual;
         continue;
-      // map<uint32, string> mp = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 34)) {
+      // map<uint32, string> mp = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(&mp_, ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<34>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -523,15 +553,22 @@ failure:
         2, this->_internal_str(), target);
   }
 
-  // repeated .bar.MySmallMessage vec = 3;
+  // .bar.MyEnum enm = 3;
+  if (this->enm() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_enm(), target);
+  }
+
+  // repeated .bar.MySmallMessage vec = 4;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->_internal_vec_size()); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-      InternalWriteMessage(3, this->_internal_vec(i), target, stream);
+      InternalWriteMessage(4, this->_internal_vec(i), target, stream);
   }
 
-  // map<uint32, string> mp = 4;
+  // map<uint32, string> mp = 5;
   if (!this->_internal_mp().empty()) {
     typedef ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_pointer
         ConstPtr;
@@ -559,14 +596,14 @@ failure:
       }
       ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
       for (size_type i = 0; i < n; i++) {
-        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(4, items[static_cast<ptrdiff_t>(i)].second->first, items[static_cast<ptrdiff_t>(i)].second->second, target, stream);
+        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(5, items[static_cast<ptrdiff_t>(i)].second->first, items[static_cast<ptrdiff_t>(i)].second->second, target, stream);
         Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)].second));
       }
     } else {
       for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_iterator
           it = this->_internal_mp().begin();
           it != this->_internal_mp().end(); ++it) {
-        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(4, it->first, it->second, target, stream);
+        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(5, it->first, it->second, target, stream);
         Utf8Check::Check(&(*it));
       }
     }
@@ -588,14 +625,14 @@ size_t MyMessage::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .bar.MySmallMessage vec = 3;
+  // repeated .bar.MySmallMessage vec = 4;
   total_size += 1UL * this->_internal_vec_size();
   for (const auto& msg : this->vec_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // map<uint32, string> mp = 4;
+  // map<uint32, string> mp = 5;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_mp_size());
   for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_iterator
@@ -614,6 +651,12 @@ size_t MyMessage::ByteSizeLong() const {
   // double val = 1;
   if (!(this->val() <= 0 && this->val() >= 0)) {
     total_size += 1 + 8;
+  }
+
+  // .bar.MyEnum enm = 3;
+  if (this->enm() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_enm());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -655,6 +698,9 @@ void MyMessage::MergeFrom(const MyMessage& from) {
   if (!(from.val() <= 0 && from.val() >= 0)) {
     _internal_set_val(from._internal_val());
   }
+  if (from.enm() != 0) {
+    _internal_set_enm(from._internal_enm());
+  }
 }
 
 void MyMessage::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -681,7 +727,12 @@ void MyMessage::InternalSwap(MyMessage* other) {
   vec_.InternalSwap(&other->vec_);
   mp_.Swap(&other->mp_);
   str_.Swap(&other->str_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  swap(val_, other->val_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(MyMessage, enm_)
+      + sizeof(MyMessage::enm_)
+      - PROTOBUF_FIELD_OFFSET(MyMessage, val_)>(
+          reinterpret_cast<char*>(&val_),
+          reinterpret_cast<char*>(&other->val_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata MyMessage::GetMetadata() const {

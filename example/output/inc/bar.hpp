@@ -10,6 +10,12 @@
 
 namespace Serializers
 {
+enum MyEnum
+{
+    MY_ENUM_0 = 0,
+    My_ENUM_1 = 1
+};
+
 struct MySmallMessage
 {
     int64_t val;
@@ -29,6 +35,7 @@ struct MyMessage
 {
     double val;
     std::string str;
+    MyEnum enm;
     std::vector<MySmallMessage> vec;
     std::unordered_map<uint32_t, std::string> mp;
 

@@ -53,6 +53,7 @@ bool MySmallMessage::deserializeFromJsonString(const std::string& str) {
 MyMessage::MyMessage(const bar::MyMessage& proto) {
     val = proto.val();
     str = proto.str();
+    enm = static_cast<MyEnum>(proto.enm());
     vec = {proto.vec().begin(), proto.vec().end()};
     mp = {proto.mp().begin(), proto.mp().end()};
 }
@@ -61,6 +62,7 @@ MyMessage::operator bar::MyMessage() const {
     bar::MyMessage ret;
     ret.set_val(val);
     ret.set_str(str);
+    ret.set_enm(static_cast<bar::MyEnum>(enm));
     *(ret.mutable_vec()) = {vec.begin(), vec.end()};
     *(ret.mutable_mp()) = {mp.begin(), mp.end()};
     return ret;
