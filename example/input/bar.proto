@@ -18,6 +18,7 @@ message MyMessage
     double val = 1;
     string str = 2;
     MyEnum enm = 3;
-    repeated MySmallMessage vec = 4;
-    map<uint32, string> mp = 5;
+    MySmallMessage mySmallMessage = 4;
+    repeated MySmallMessage vec = 5;
+    map<uint32, string> mp = 6;
 }

@@ -36,6 +36,7 @@ struct MyMessage
     double val;
     std::string str;
     MyEnum enm;
+    MySmallMessage mySmallMessage;
     std::vector<MySmallMessage> vec;
     std::unordered_map<uint32_t, std::string> mp;
 

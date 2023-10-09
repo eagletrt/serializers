@@ -386,13 +386,14 @@ class MyMessage PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kVecFieldNumber = 4,
-    kMpFieldNumber = 5,
+    kVecFieldNumber = 5,
+    kMpFieldNumber = 6,
     kStrFieldNumber = 2,
+    kMySmallMessageFieldNumber = 4,
     kValFieldNumber = 1,
     kEnmFieldNumber = 3,
   };
-  // repeated .bar.MySmallMessage vec = 4;
+  // repeated .bar.MySmallMessage vec = 5;
   int vec_size() const;
   private:
   int _internal_vec_size() const;
@@ -410,7 +411,7 @@ class MyMessage PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
       vec() const;
 
-  // map<uint32, string> mp = 5;
+  // map<uint32, string> mp = 6;
   int mp_size() const;
   private:
   int _internal_mp_size() const;
@@ -452,6 +453,24 @@ class MyMessage PROTOBUF_FINAL :
   std::string* _internal_mutable_str();
   public:
 
+  // .bar.MySmallMessage mySmallMessage = 4;
+  bool has_mysmallmessage() const;
+  private:
+  bool _internal_has_mysmallmessage() const;
+  public:
+  void clear_mysmallmessage();
+  const ::bar::MySmallMessage& mysmallmessage() const;
+  ::bar::MySmallMessage* release_mysmallmessage();
+  ::bar::MySmallMessage* mutable_mysmallmessage();
+  void set_allocated_mysmallmessage(::bar::MySmallMessage* mysmallmessage);
+  private:
+  const ::bar::MySmallMessage& _internal_mysmallmessage() const;
+  ::bar::MySmallMessage* _internal_mutable_mysmallmessage();
+  public:
+  void unsafe_arena_set_allocated_mysmallmessage(
+      ::bar::MySmallMessage* mysmallmessage);
+  ::bar::MySmallMessage* unsafe_arena_release_mysmallmessage();
+
   // double val = 1;
   void clear_val();
   double val() const;
@@ -485,6 +504,7 @@ class MyMessage PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
       0 > mp_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
+  ::bar::MySmallMessage* mysmallmessage_;
   double val_;
   int enm_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -648,7 +668,88 @@ inline void MyMessage::set_enm(::bar::MyEnum value) {
   // @@protoc_insertion_point(field_set:bar.MyMessage.enm)
 }
 
-// repeated .bar.MySmallMessage vec = 4;
+// .bar.MySmallMessage mySmallMessage = 4;
+inline bool MyMessage::_internal_has_mysmallmessage() const {
+  return this != internal_default_instance() && mysmallmessage_ != nullptr;
+}
+inline bool MyMessage::has_mysmallmessage() const {
+  return _internal_has_mysmallmessage();
+}
+inline void MyMessage::clear_mysmallmessage() {
+  if (GetArena() == nullptr && mysmallmessage_ != nullptr) {
+    delete mysmallmessage_;
+  }
+  mysmallmessage_ = nullptr;
+}
+inline const ::bar::MySmallMessage& MyMessage::_internal_mysmallmessage() const {
+  const ::bar::MySmallMessage* p = mysmallmessage_;
+  return p != nullptr ? *p : *reinterpret_cast<const ::bar::MySmallMessage*>(
+      &::bar::_MySmallMessage_default_instance_);
+}
+inline const ::bar::MySmallMessage& MyMessage::mysmallmessage() const {
+  // @@protoc_insertion_point(field_get:bar.MyMessage.mySmallMessage)
+  return _internal_mysmallmessage();
+}
+inline void MyMessage::unsafe_arena_set_allocated_mysmallmessage(
+    ::bar::MySmallMessage* mysmallmessage) {
+  if (GetArena() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(mysmallmessage_);
+  }
+  mysmallmessage_ = mysmallmessage;
+  if (mysmallmessage) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:bar.MyMessage.mySmallMessage)
+}
+inline ::bar::MySmallMessage* MyMessage::release_mysmallmessage() {
+  auto temp = unsafe_arena_release_mysmallmessage();
+  if (GetArena() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+  return temp;
+}
+inline ::bar::MySmallMessage* MyMessage::unsafe_arena_release_mysmallmessage() {
+  // @@protoc_insertion_point(field_release:bar.MyMessage.mySmallMessage)
+  
+  ::bar::MySmallMessage* temp = mysmallmessage_;
+  mysmallmessage_ = nullptr;
+  return temp;
+}
+inline ::bar::MySmallMessage* MyMessage::_internal_mutable_mysmallmessage() {
+  
+  if (mysmallmessage_ == nullptr) {
+    auto* p = CreateMaybeMessage<::bar::MySmallMessage>(GetArena());
+    mysmallmessage_ = p;
+  }
+  return mysmallmessage_;
+}
+inline ::bar::MySmallMessage* MyMessage::mutable_mysmallmessage() {
+  // @@protoc_insertion_point(field_mutable:bar.MyMessage.mySmallMessage)
+  return _internal_mutable_mysmallmessage();
+}
+inline void MyMessage::set_allocated_mysmallmessage(::bar::MySmallMessage* mysmallmessage) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+  if (message_arena == nullptr) {
+    delete mysmallmessage_;
+  }
+  if (mysmallmessage) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(mysmallmessage);
+    if (message_arena != submessage_arena) {
+      mysmallmessage = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, mysmallmessage, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  mysmallmessage_ = mysmallmessage;
+  // @@protoc_insertion_point(field_set_allocated:bar.MyMessage.mySmallMessage)
+}
+
+// repeated .bar.MySmallMessage vec = 5;
 inline int MyMessage::_internal_vec_size() const {
   return vec_.size();
 }
@@ -687,7 +788,7 @@ MyMessage::vec() const {
   return vec_;
 }
 
-// map<uint32, string> mp = 5;
+// map<uint32, string> mp = 6;
 inline int MyMessage::_internal_mp_size() const {
   return mp_.size();
 }
