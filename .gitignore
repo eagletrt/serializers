@@ -1,5 +1,5 @@
 *.vscode
 *.idea
 
-bin/
-build/
+__pycache__
+.generated/

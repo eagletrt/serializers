@@ -11,6 +11,14 @@
 namespace serializers
 {
 
+{% for _enum in enums -%}
+enum class {{ _enum.name }} {
+    {% for element in _enum.elements -%}
+    {{element.name}} = {{element.number}},
+    {% endfor %}
+}
+{% endfor %}
+
 {% for message in messages -%}
 struct {{ message.name }}
 {
@@ -20,11 +28,9 @@ struct {{ message.name }}
 
     {{ message.name }}() = default;
     {{ message.name }}(const bar::{{ message.name }}& proto);
-    {% if package.name -%}
+
     operator {{ package.name }}::{{ message.name }}() const;
-    {% else %}
-    operator {{ message.name }}() const;
-    {% endif %}
+
     std::string serializeAsProtobufString() const;
     std::string serializeAsJsonString() const;
     bool deserializeFromProtobufString(const std::string& str);
