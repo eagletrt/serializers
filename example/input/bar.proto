@@ -20,5 +20,6 @@ message MyMessage
     MyEnum enm = 3;
     MySmallMessage mySmallMessage = 4;
     repeated MySmallMessage vec = 5;
-    map<uint32, string> mp = 6;
+    repeated MyEnum enums = 6;
+    map<uint32, string> mp = 7;
 }

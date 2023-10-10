@@ -56,6 +56,8 @@ MyMessage::MyMessage(const bar::MyMessage& proto) {
     enm = static_cast<MyEnum>(proto.enm());
     mySmallMessage = proto.mysmallmessage();
     vec = {proto.vec().begin(), proto.vec().end()};
+    enums.resize(proto.enums().size());
+    std::transform(proto.enums().begin(), proto.enums().end(), enums.begin(), [](const auto& e) { return static_cast<MyEnum>(e); }); 
     mp = {proto.mp().begin(), proto.mp().end()};
 }
 
@@ -63,9 +65,11 @@ MyMessage::operator bar::MyMessage() const {
     bar::MyMessage ret;
     ret.set_val(val);
     ret.set_str(str);
-    ret.set_enm(static_cast<bar::MyEnum>(enm));\
+    ret.set_enm(static_cast<bar::MyEnum>(enm));
     *(ret.mutable_mysmallmessage()) = mySmallMessage;
     *(ret.mutable_vec()) = {vec.begin(), vec.end()};
+    ret.mutable_enums()->Resize(enums.size(), 0);
+    std::transform(enums.begin(), enums.end(), ret.mutable_enums()->begin(), [](const auto& e) { return static_cast<bar::MyEnum>(e); });
     *(ret.mutable_mp()) = {mp.begin(), mp.end()};
     return ret;
 }

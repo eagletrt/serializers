@@ -38,6 +38,7 @@ struct MyMessage
     MyEnum enm;
     MySmallMessage mySmallMessage;
     std::vector<MySmallMessage> vec;
+    std::vector<MyEnum> enums;
     std::unordered_map<uint32_t, std::string> mp;
 
     MyMessage() = default;

@@ -387,7 +387,8 @@ class MyMessage PROTOBUF_FINAL :
 
   enum : int {
     kVecFieldNumber = 5,
-    kMpFieldNumber = 6,
+    kEnumsFieldNumber = 6,
+    kMpFieldNumber = 7,
     kStrFieldNumber = 2,
     kMySmallMessageFieldNumber = 4,
     kValFieldNumber = 1,
@@ -411,7 +412,24 @@ class MyMessage PROTOBUF_FINAL :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
       vec() const;
 
-  // map<uint32, string> mp = 6;
+  // repeated .bar.MyEnum enums = 6;
+  int enums_size() const;
+  private:
+  int _internal_enums_size() const;
+  public:
+  void clear_enums();
+  private:
+  ::bar::MyEnum _internal_enums(int index) const;
+  void _internal_add_enums(::bar::MyEnum value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_enums();
+  public:
+  ::bar::MyEnum enums(int index) const;
+  void set_enums(int index, ::bar::MyEnum value);
+  void add_enums(::bar::MyEnum value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& enums() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_enums();
+
+  // map<uint32, string> mp = 7;
   int mp_size() const;
   private:
   int _internal_mp_size() const;
@@ -497,6 +515,8 @@ class MyMessage PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage > vec_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> enums_;
+  mutable std::atomic<int> _enums_cached_byte_size_;
   ::PROTOBUF_NAMESPACE_ID::internal::MapField<
       MyMessage_MpEntry_DoNotUse,
       ::PROTOBUF_NAMESPACE_ID::uint32, std::string,
@@ -788,7 +808,50 @@ MyMessage::vec() const {
   return vec_;
 }
 
-// map<uint32, string> mp = 6;
+// repeated .bar.MyEnum enums = 6;
+inline int MyMessage::_internal_enums_size() const {
+  return enums_.size();
+}
+inline int MyMessage::enums_size() const {
+  return _internal_enums_size();
+}
+inline void MyMessage::clear_enums() {
+  enums_.Clear();
+}
+inline ::bar::MyEnum MyMessage::_internal_enums(int index) const {
+  return static_cast< ::bar::MyEnum >(enums_.Get(index));
+}
+inline ::bar::MyEnum MyMessage::enums(int index) const {
+  // @@protoc_insertion_point(field_get:bar.MyMessage.enums)
+  return _internal_enums(index);
+}
+inline void MyMessage::set_enums(int index, ::bar::MyEnum value) {
+  enums_.Set(index, value);
+  // @@protoc_insertion_point(field_set:bar.MyMessage.enums)
+}
+inline void MyMessage::_internal_add_enums(::bar::MyEnum value) {
+  enums_.Add(value);
+}
+inline void MyMessage::add_enums(::bar::MyEnum value) {
+  // @@protoc_insertion_point(field_add:bar.MyMessage.enums)
+  _internal_add_enums(value);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
+MyMessage::enums() const {
+  // @@protoc_insertion_point(field_list:bar.MyMessage.enums)
+  return enums_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+MyMessage::_internal_mutable_enums() {
+  return &enums_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+MyMessage::mutable_enums() {
+  // @@protoc_insertion_point(field_mutable_list:bar.MyMessage.enums)
+  return _internal_mutable_enums();
+}
+
+// map<uint32, string> mp = 7;
 inline int MyMessage::_internal_mp_size() const {
   return mp_.size();
 }

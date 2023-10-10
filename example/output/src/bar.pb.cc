@@ -103,6 +103,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_bar_2eproto::offsets[] PROTOBU
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, enm_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, mysmallmessage_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, vec_),
+  PROTOBUF_FIELD_OFFSET(::bar::MyMessage, enums_),
   PROTOBUF_FIELD_OFFSET(::bar::MyMessage, mp_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -119,13 +120,14 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 
 const char descriptor_table_protodef_bar_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\tbar.proto\022\003bar\"\035\n\016MySmallMessage\022\013\n\003va"
-  "l\030\001 \001(\003\"\335\001\n\tMyMessage\022\013\n\003val\030\001 \001(\001\022\013\n\003st"
+  "l\030\001 \001(\003\"\371\001\n\tMyMessage\022\013\n\003val\030\001 \001(\001\022\013\n\003st"
   "r\030\002 \001(\t\022\030\n\003enm\030\003 \001(\0162\013.bar.MyEnum\022+\n\016myS"
   "mallMessage\030\004 \001(\0132\023.bar.MySmallMessage\022 "
-  "\n\003vec\030\005 \003(\0132\023.bar.MySmallMessage\022\"\n\002mp\030\006"
-  " \003(\0132\026.bar.MyMessage.MpEntry\032)\n\007MpEntry\022"
-  "\013\n\003key\030\001 \001(\r\022\r\n\005value\030\002 \001(\t:\0028\001*&\n\006MyEnu"
-  "m\022\r\n\tMY_ENUM_0\020\000\022\r\n\tMy_ENUM_1\020\001b\006proto3"
+  "\n\003vec\030\005 \003(\0132\023.bar.MySmallMessage\022\032\n\005enum"
+  "s\030\006 \003(\0162\013.bar.MyEnum\022\"\n\002mp\030\007 \003(\0132\026.bar.M"
+  "yMessage.MpEntry\032)\n\007MpEntry\022\013\n\003key\030\001 \001(\r"
+  "\022\r\n\005value\030\002 \001(\t:\0028\001*&\n\006MyEnum\022\r\n\tMY_ENUM"
+  "_0\020\000\022\r\n\tMy_ENUM_1\020\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_bar_2eproto_deps[1] = {
 };
@@ -136,7 +138,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_bar
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_bar_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_bar_2eproto = {
-  false, false, descriptor_table_protodef_bar_2eproto, "bar.proto", 319,
+  false, false, descriptor_table_protodef_bar_2eproto, "bar.proto", 347,
   &descriptor_table_bar_2eproto_once, descriptor_table_bar_2eproto_sccs, descriptor_table_bar_2eproto_deps, 3, 0,
   schemas, file_default_instances, TableStruct_bar_2eproto::offsets,
   file_level_metadata_bar_2eproto, 3, file_level_enum_descriptors_bar_2eproto, file_level_service_descriptors_bar_2eproto,
@@ -392,6 +394,7 @@ MyMessage::_Internal::mysmallmessage(const MyMessage* msg) {
 MyMessage::MyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena),
   vec_(arena),
+  enums_(arena),
   mp_(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
@@ -399,7 +402,8 @@ MyMessage::MyMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 }
 MyMessage::MyMessage(const MyMessage& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
-      vec_(from.vec_) {
+      vec_(from.vec_),
+      enums_(from.enums_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   mp_.MergeFrom(from.mp_);
   str_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -460,6 +464,7 @@ void MyMessage::Clear() {
   (void) cached_has_bits;
 
   vec_.Clear();
+  enums_.Clear();
   mp_.Clear();
   str_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   if (GetArena() == nullptr && mysmallmessage_ != nullptr) {
@@ -523,16 +528,27 @@ const char* MyMessage::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<42>(ptr));
         } else goto handle_unusual;
         continue;
-      // map<uint32, string> mp = 6;
+      // repeated .bar.MyEnum enums = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 50)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedEnumParser(_internal_mutable_enums(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_add_enums(static_cast<::bar::MyEnum>(val));
+        } else goto handle_unusual;
+        continue;
+      // map<uint32, string> mp = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 58)) {
           ptr -= 1;
           do {
             ptr += 1;
             ptr = ctx->ParseMessage(&mp_, ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<50>(ptr));
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<58>(ptr));
         } else goto handle_unusual;
         continue;
       default: {
@@ -602,7 +618,16 @@ failure:
       InternalWriteMessage(5, this->_internal_vec(i), target, stream);
   }
 
-  // map<uint32, string> mp = 6;
+  // repeated .bar.MyEnum enums = 6;
+  {
+    int byte_size = _enums_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteEnumPacked(
+          6, enums_, byte_size, target);
+    }
+  }
+
+  // map<uint32, string> mp = 7;
   if (!this->_internal_mp().empty()) {
     typedef ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_pointer
         ConstPtr;
@@ -630,14 +655,14 @@ failure:
       }
       ::std::sort(&items[0], &items[static_cast<ptrdiff_t>(n)], Less());
       for (size_type i = 0; i < n; i++) {
-        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(6, items[static_cast<ptrdiff_t>(i)].second->first, items[static_cast<ptrdiff_t>(i)].second->second, target, stream);
+        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(7, items[static_cast<ptrdiff_t>(i)].second->first, items[static_cast<ptrdiff_t>(i)].second->second, target, stream);
         Utf8Check::Check(&(*items[static_cast<ptrdiff_t>(i)].second));
       }
     } else {
       for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_iterator
           it = this->_internal_mp().begin();
           it != this->_internal_mp().end(); ++it) {
-        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(6, it->first, it->second, target, stream);
+        target = MyMessage_MpEntry_DoNotUse::Funcs::InternalSerialize(7, it->first, it->second, target, stream);
         Utf8Check::Check(&(*it));
       }
     }
@@ -666,7 +691,25 @@ size_t MyMessage::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // map<uint32, string> mp = 6;
+  // repeated .bar.MyEnum enums = 6;
+  {
+    size_t data_size = 0;
+    unsigned int count = static_cast<unsigned int>(this->_internal_enums_size());for (unsigned int i = 0; i < count; i++) {
+      data_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(
+        this->_internal_enums(static_cast<int>(i)));
+    }
+    if (data_size > 0) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+            static_cast<::PROTOBUF_NAMESPACE_ID::int32>(data_size));
+    }
+    int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(data_size);
+    _enums_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // map<uint32, string> mp = 7;
   total_size += 1 *
       ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(this->_internal_mp_size());
   for (::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >::const_iterator
@@ -732,6 +775,7 @@ void MyMessage::MergeFrom(const MyMessage& from) {
   (void) cached_has_bits;
 
   vec_.MergeFrom(from.vec_);
+  enums_.MergeFrom(from.enums_);
   mp_.MergeFrom(from.mp_);
   if (from.str().size() > 0) {
     _internal_set_str(from._internal_str());
@@ -769,6 +813,7 @@ void MyMessage::InternalSwap(MyMessage* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   vec_.InternalSwap(&other->vec_);
+  enums_.InternalSwap(&other->enums_);
   mp_.Swap(&other->mp_);
   str_.Swap(&other->str_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
