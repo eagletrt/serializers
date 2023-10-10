@@ -37,9 +37,11 @@ struct MyMessage
     std::string str;
     MyEnum enm;
     MySmallMessage mySmallMessage;
-    std::vector<MySmallMessage> vec;
-    std::vector<MyEnum> enums;
-    std::unordered_map<uint32_t, std::string> mp;
+    std::vector<MyEnum> enumVec;
+    std::vector<MySmallMessage> structVec;
+    std::unordered_map<uint32_t, std::string> stringMap;
+    std::unordered_map<uint32_t, MyEnum> enumMap;
+    std::unordered_map<uint32_t, MySmallMessage> structMap;
 
     MyMessage() = default;
     MyMessage(const bar::MyMessage& proto);

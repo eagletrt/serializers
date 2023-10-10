@@ -51,7 +51,7 @@ struct TableStruct_bar_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[3]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[5]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -62,16 +62,24 @@ namespace bar {
 class MyMessage;
 class MyMessageDefaultTypeInternal;
 extern MyMessageDefaultTypeInternal _MyMessage_default_instance_;
-class MyMessage_MpEntry_DoNotUse;
-class MyMessage_MpEntry_DoNotUseDefaultTypeInternal;
-extern MyMessage_MpEntry_DoNotUseDefaultTypeInternal _MyMessage_MpEntry_DoNotUse_default_instance_;
+class MyMessage_EnumMapEntry_DoNotUse;
+class MyMessage_EnumMapEntry_DoNotUseDefaultTypeInternal;
+extern MyMessage_EnumMapEntry_DoNotUseDefaultTypeInternal _MyMessage_EnumMapEntry_DoNotUse_default_instance_;
+class MyMessage_StringMapEntry_DoNotUse;
+class MyMessage_StringMapEntry_DoNotUseDefaultTypeInternal;
+extern MyMessage_StringMapEntry_DoNotUseDefaultTypeInternal _MyMessage_StringMapEntry_DoNotUse_default_instance_;
+class MyMessage_StructMapEntry_DoNotUse;
+class MyMessage_StructMapEntry_DoNotUseDefaultTypeInternal;
+extern MyMessage_StructMapEntry_DoNotUseDefaultTypeInternal _MyMessage_StructMapEntry_DoNotUse_default_instance_;
 class MySmallMessage;
 class MySmallMessageDefaultTypeInternal;
 extern MySmallMessageDefaultTypeInternal _MySmallMessage_default_instance_;
 }  // namespace bar
 PROTOBUF_NAMESPACE_OPEN
 template<> ::bar::MyMessage* Arena::CreateMaybeMessage<::bar::MyMessage>(Arena*);
-template<> ::bar::MyMessage_MpEntry_DoNotUse* Arena::CreateMaybeMessage<::bar::MyMessage_MpEntry_DoNotUse>(Arena*);
+template<> ::bar::MyMessage_EnumMapEntry_DoNotUse* Arena::CreateMaybeMessage<::bar::MyMessage_EnumMapEntry_DoNotUse>(Arena*);
+template<> ::bar::MyMessage_StringMapEntry_DoNotUse* Arena::CreateMaybeMessage<::bar::MyMessage_StringMapEntry_DoNotUse>(Arena*);
+template<> ::bar::MyMessage_StructMapEntry_DoNotUse* Arena::CreateMaybeMessage<::bar::MyMessage_StructMapEntry_DoNotUse>(Arena*);
 template<> ::bar::MySmallMessage* Arena::CreateMaybeMessage<::bar::MySmallMessage>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace bar {
@@ -240,24 +248,24 @@ class MySmallMessage PROTOBUF_FINAL :
 };
 // -------------------------------------------------------------------
 
-class MyMessage_MpEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_MpEntry_DoNotUse, 
+class MyMessage_StringMapEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_StringMapEntry_DoNotUse, 
     ::PROTOBUF_NAMESPACE_ID::uint32, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
     0 > {
 public:
-  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_MpEntry_DoNotUse, 
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_StringMapEntry_DoNotUse, 
     ::PROTOBUF_NAMESPACE_ID::uint32, std::string,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
     0 > SuperType;
-  MyMessage_MpEntry_DoNotUse();
-  MyMessage_MpEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
-  void MergeFrom(const MyMessage_MpEntry_DoNotUse& other);
-  static const MyMessage_MpEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const MyMessage_MpEntry_DoNotUse*>(&_MyMessage_MpEntry_DoNotUse_default_instance_); }
+  MyMessage_StringMapEntry_DoNotUse();
+  MyMessage_StringMapEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const MyMessage_StringMapEntry_DoNotUse& other);
+  static const MyMessage_StringMapEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const MyMessage_StringMapEntry_DoNotUse*>(&_MyMessage_StringMapEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(std::string* s) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "bar.MyMessage.MpEntry.value");
+    return ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::PARSE, "bar.MyMessage.StringMapEntry.value");
  }
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& other) final;
   ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
@@ -265,6 +273,66 @@ public:
   static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
     ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_bar_2eproto);
     return ::descriptor_table_bar_2eproto.file_level_metadata[1];
+  }
+
+  public:
+};
+
+// -------------------------------------------------------------------
+
+class MyMessage_EnumMapEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_EnumMapEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM,
+    0 > {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_EnumMapEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM,
+    0 > SuperType;
+  MyMessage_EnumMapEntry_DoNotUse();
+  MyMessage_EnumMapEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const MyMessage_EnumMapEntry_DoNotUse& other);
+  static const MyMessage_EnumMapEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const MyMessage_EnumMapEntry_DoNotUse*>(&_MyMessage_EnumMapEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(void*) { return true; }
+  static bool ValidateValue(void*) { return true; }
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& other) final;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_bar_2eproto);
+    return ::descriptor_table_bar_2eproto.file_level_metadata[2];
+  }
+
+  public:
+};
+
+// -------------------------------------------------------------------
+
+class MyMessage_StructMapEntry_DoNotUse : public ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_StructMapEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE,
+    0 > {
+public:
+  typedef ::PROTOBUF_NAMESPACE_ID::internal::MapEntry<MyMessage_StructMapEntry_DoNotUse, 
+    ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE,
+    0 > SuperType;
+  MyMessage_StructMapEntry_DoNotUse();
+  MyMessage_StructMapEntry_DoNotUse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void MergeFrom(const MyMessage_StructMapEntry_DoNotUse& other);
+  static const MyMessage_StructMapEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const MyMessage_StructMapEntry_DoNotUse*>(&_MyMessage_StructMapEntry_DoNotUse_default_instance_); }
+  static bool ValidateKey(void*) { return true; }
+  static bool ValidateValue(void*) { return true; }
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& other) final;
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_bar_2eproto);
+    return ::descriptor_table_bar_2eproto.file_level_metadata[3];
   }
 
   public:
@@ -314,7 +382,7 @@ class MyMessage PROTOBUF_FINAL :
                &_MyMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    4;
 
   friend void swap(MyMessage& a, MyMessage& b) {
     a.Swap(&b);
@@ -386,65 +454,101 @@ class MyMessage PROTOBUF_FINAL :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kVecFieldNumber = 5,
-    kEnumsFieldNumber = 6,
-    kMpFieldNumber = 7,
+    kEnumVecFieldNumber = 5,
+    kStructVecFieldNumber = 6,
+    kStringMapFieldNumber = 7,
+    kEnumMapFieldNumber = 8,
+    kStructMapFieldNumber = 9,
     kStrFieldNumber = 2,
     kMySmallMessageFieldNumber = 4,
     kValFieldNumber = 1,
     kEnmFieldNumber = 3,
   };
-  // repeated .bar.MySmallMessage vec = 5;
-  int vec_size() const;
+  // repeated .bar.MyEnum enumVec = 5;
+  int enumvec_size() const;
   private:
-  int _internal_vec_size() const;
+  int _internal_enumvec_size() const;
   public:
-  void clear_vec();
-  ::bar::MySmallMessage* mutable_vec(int index);
+  void clear_enumvec();
+  private:
+  ::bar::MyEnum _internal_enumvec(int index) const;
+  void _internal_add_enumvec(::bar::MyEnum value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_enumvec();
+  public:
+  ::bar::MyEnum enumvec(int index) const;
+  void set_enumvec(int index, ::bar::MyEnum value);
+  void add_enumvec(::bar::MyEnum value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& enumvec() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_enumvec();
+
+  // repeated .bar.MySmallMessage structVec = 6;
+  int structvec_size() const;
+  private:
+  int _internal_structvec_size() const;
+  public:
+  void clear_structvec();
+  ::bar::MySmallMessage* mutable_structvec(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >*
-      mutable_vec();
+      mutable_structvec();
   private:
-  const ::bar::MySmallMessage& _internal_vec(int index) const;
-  ::bar::MySmallMessage* _internal_add_vec();
+  const ::bar::MySmallMessage& _internal_structvec(int index) const;
+  ::bar::MySmallMessage* _internal_add_structvec();
   public:
-  const ::bar::MySmallMessage& vec(int index) const;
-  ::bar::MySmallMessage* add_vec();
+  const ::bar::MySmallMessage& structvec(int index) const;
+  ::bar::MySmallMessage* add_structvec();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
-      vec() const;
+      structvec() const;
 
-  // repeated .bar.MyEnum enums = 6;
-  int enums_size() const;
+  // map<uint32, string> stringMap = 7;
+  int stringmap_size() const;
   private:
-  int _internal_enums_size() const;
+  int _internal_stringmap_size() const;
   public:
-  void clear_enums();
-  private:
-  ::bar::MyEnum _internal_enums(int index) const;
-  void _internal_add_enums(::bar::MyEnum value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_enums();
-  public:
-  ::bar::MyEnum enums(int index) const;
-  void set_enums(int index, ::bar::MyEnum value);
-  void add_enums(::bar::MyEnum value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& enums() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_enums();
-
-  // map<uint32, string> mp = 7;
-  int mp_size() const;
-  private:
-  int _internal_mp_size() const;
-  public:
-  void clear_mp();
+  void clear_stringmap();
   private:
   const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >&
-      _internal_mp() const;
+      _internal_stringmap() const;
   ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >*
-      _internal_mutable_mp();
+      _internal_mutable_stringmap();
   public:
   const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >&
-      mp() const;
+      stringmap() const;
   ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >*
-      mutable_mp();
+      mutable_stringmap();
+
+  // map<uint32, .bar.MyEnum> enumMap = 8;
+  int enummap_size() const;
+  private:
+  int _internal_enummap_size() const;
+  public:
+  void clear_enummap();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >&
+      _internal_enummap() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >*
+      _internal_mutable_enummap();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >&
+      enummap() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >*
+      mutable_enummap();
+
+  // map<uint32, .bar.MySmallMessage> structMap = 9;
+  int structmap_size() const;
+  private:
+  int _internal_structmap_size() const;
+  public:
+  void clear_structmap();
+  private:
+  const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >&
+      _internal_structmap() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >*
+      _internal_mutable_structmap();
+  public:
+  const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >&
+      structmap() const;
+  ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >*
+      mutable_structmap();
 
   // string str = 2;
   void clear_str();
@@ -514,15 +618,27 @@ class MyMessage PROTOBUF_FINAL :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage > vec_;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> enums_;
-  mutable std::atomic<int> _enums_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> enumvec_;
+  mutable std::atomic<int> _enumvec_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage > structvec_;
   ::PROTOBUF_NAMESPACE_ID::internal::MapField<
-      MyMessage_MpEntry_DoNotUse,
+      MyMessage_StringMapEntry_DoNotUse,
       ::PROTOBUF_NAMESPACE_ID::uint32, std::string,
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_STRING,
-      0 > mp_;
+      0 > stringmap_;
+  ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+      MyMessage_EnumMapEntry_DoNotUse,
+      ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_ENUM,
+      0 > enummap_;
+  ::PROTOBUF_NAMESPACE_ID::internal::MapField<
+      MyMessage_StructMapEntry_DoNotUse,
+      ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_UINT32,
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::TYPE_MESSAGE,
+      0 > structmap_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
   ::bar::MySmallMessage* mysmallmessage_;
   double val_;
@@ -560,6 +676,10 @@ inline void MySmallMessage::set_val(::PROTOBUF_NAMESPACE_ID::int64 value) {
   _internal_set_val(value);
   // @@protoc_insertion_point(field_set:bar.MySmallMessage.val)
 }
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
 
@@ -769,120 +889,182 @@ inline void MyMessage::set_allocated_mysmallmessage(::bar::MySmallMessage* mysma
   // @@protoc_insertion_point(field_set_allocated:bar.MyMessage.mySmallMessage)
 }
 
-// repeated .bar.MySmallMessage vec = 5;
-inline int MyMessage::_internal_vec_size() const {
-  return vec_.size();
+// repeated .bar.MyEnum enumVec = 5;
+inline int MyMessage::_internal_enumvec_size() const {
+  return enumvec_.size();
 }
-inline int MyMessage::vec_size() const {
-  return _internal_vec_size();
+inline int MyMessage::enumvec_size() const {
+  return _internal_enumvec_size();
 }
-inline void MyMessage::clear_vec() {
-  vec_.Clear();
+inline void MyMessage::clear_enumvec() {
+  enumvec_.Clear();
 }
-inline ::bar::MySmallMessage* MyMessage::mutable_vec(int index) {
-  // @@protoc_insertion_point(field_mutable:bar.MyMessage.vec)
-  return vec_.Mutable(index);
+inline ::bar::MyEnum MyMessage::_internal_enumvec(int index) const {
+  return static_cast< ::bar::MyEnum >(enumvec_.Get(index));
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >*
-MyMessage::mutable_vec() {
-  // @@protoc_insertion_point(field_mutable_list:bar.MyMessage.vec)
-  return &vec_;
+inline ::bar::MyEnum MyMessage::enumvec(int index) const {
+  // @@protoc_insertion_point(field_get:bar.MyMessage.enumVec)
+  return _internal_enumvec(index);
 }
-inline const ::bar::MySmallMessage& MyMessage::_internal_vec(int index) const {
-  return vec_.Get(index);
+inline void MyMessage::set_enumvec(int index, ::bar::MyEnum value) {
+  enumvec_.Set(index, value);
+  // @@protoc_insertion_point(field_set:bar.MyMessage.enumVec)
 }
-inline const ::bar::MySmallMessage& MyMessage::vec(int index) const {
-  // @@protoc_insertion_point(field_get:bar.MyMessage.vec)
-  return _internal_vec(index);
+inline void MyMessage::_internal_add_enumvec(::bar::MyEnum value) {
+  enumvec_.Add(value);
 }
-inline ::bar::MySmallMessage* MyMessage::_internal_add_vec() {
-  return vec_.Add();
-}
-inline ::bar::MySmallMessage* MyMessage::add_vec() {
-  // @@protoc_insertion_point(field_add:bar.MyMessage.vec)
-  return _internal_add_vec();
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
-MyMessage::vec() const {
-  // @@protoc_insertion_point(field_list:bar.MyMessage.vec)
-  return vec_;
-}
-
-// repeated .bar.MyEnum enums = 6;
-inline int MyMessage::_internal_enums_size() const {
-  return enums_.size();
-}
-inline int MyMessage::enums_size() const {
-  return _internal_enums_size();
-}
-inline void MyMessage::clear_enums() {
-  enums_.Clear();
-}
-inline ::bar::MyEnum MyMessage::_internal_enums(int index) const {
-  return static_cast< ::bar::MyEnum >(enums_.Get(index));
-}
-inline ::bar::MyEnum MyMessage::enums(int index) const {
-  // @@protoc_insertion_point(field_get:bar.MyMessage.enums)
-  return _internal_enums(index);
-}
-inline void MyMessage::set_enums(int index, ::bar::MyEnum value) {
-  enums_.Set(index, value);
-  // @@protoc_insertion_point(field_set:bar.MyMessage.enums)
-}
-inline void MyMessage::_internal_add_enums(::bar::MyEnum value) {
-  enums_.Add(value);
-}
-inline void MyMessage::add_enums(::bar::MyEnum value) {
-  // @@protoc_insertion_point(field_add:bar.MyMessage.enums)
-  _internal_add_enums(value);
+inline void MyMessage::add_enumvec(::bar::MyEnum value) {
+  // @@protoc_insertion_point(field_add:bar.MyMessage.enumVec)
+  _internal_add_enumvec(value);
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-MyMessage::enums() const {
-  // @@protoc_insertion_point(field_list:bar.MyMessage.enums)
-  return enums_;
+MyMessage::enumvec() const {
+  // @@protoc_insertion_point(field_list:bar.MyMessage.enumVec)
+  return enumvec_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-MyMessage::_internal_mutable_enums() {
-  return &enums_;
+MyMessage::_internal_mutable_enumvec() {
+  return &enumvec_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-MyMessage::mutable_enums() {
-  // @@protoc_insertion_point(field_mutable_list:bar.MyMessage.enums)
-  return _internal_mutable_enums();
+MyMessage::mutable_enumvec() {
+  // @@protoc_insertion_point(field_mutable_list:bar.MyMessage.enumVec)
+  return _internal_mutable_enumvec();
 }
 
-// map<uint32, string> mp = 7;
-inline int MyMessage::_internal_mp_size() const {
-  return mp_.size();
+// repeated .bar.MySmallMessage structVec = 6;
+inline int MyMessage::_internal_structvec_size() const {
+  return structvec_.size();
 }
-inline int MyMessage::mp_size() const {
-  return _internal_mp_size();
+inline int MyMessage::structvec_size() const {
+  return _internal_structvec_size();
 }
-inline void MyMessage::clear_mp() {
-  mp_.Clear();
+inline void MyMessage::clear_structvec() {
+  structvec_.Clear();
+}
+inline ::bar::MySmallMessage* MyMessage::mutable_structvec(int index) {
+  // @@protoc_insertion_point(field_mutable:bar.MyMessage.structVec)
+  return structvec_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >*
+MyMessage::mutable_structvec() {
+  // @@protoc_insertion_point(field_mutable_list:bar.MyMessage.structVec)
+  return &structvec_;
+}
+inline const ::bar::MySmallMessage& MyMessage::_internal_structvec(int index) const {
+  return structvec_.Get(index);
+}
+inline const ::bar::MySmallMessage& MyMessage::structvec(int index) const {
+  // @@protoc_insertion_point(field_get:bar.MyMessage.structVec)
+  return _internal_structvec(index);
+}
+inline ::bar::MySmallMessage* MyMessage::_internal_add_structvec() {
+  return structvec_.Add();
+}
+inline ::bar::MySmallMessage* MyMessage::add_structvec() {
+  // @@protoc_insertion_point(field_add:bar.MyMessage.structVec)
+  return _internal_add_structvec();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::bar::MySmallMessage >&
+MyMessage::structvec() const {
+  // @@protoc_insertion_point(field_list:bar.MyMessage.structVec)
+  return structvec_;
+}
+
+// map<uint32, string> stringMap = 7;
+inline int MyMessage::_internal_stringmap_size() const {
+  return stringmap_.size();
+}
+inline int MyMessage::stringmap_size() const {
+  return _internal_stringmap_size();
+}
+inline void MyMessage::clear_stringmap() {
+  stringmap_.Clear();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >&
-MyMessage::_internal_mp() const {
-  return mp_.GetMap();
+MyMessage::_internal_stringmap() const {
+  return stringmap_.GetMap();
 }
 inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >&
-MyMessage::mp() const {
-  // @@protoc_insertion_point(field_map:bar.MyMessage.mp)
-  return _internal_mp();
+MyMessage::stringmap() const {
+  // @@protoc_insertion_point(field_map:bar.MyMessage.stringMap)
+  return _internal_stringmap();
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >*
-MyMessage::_internal_mutable_mp() {
-  return mp_.MutableMap();
+MyMessage::_internal_mutable_stringmap() {
+  return stringmap_.MutableMap();
 }
 inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, std::string >*
-MyMessage::mutable_mp() {
-  // @@protoc_insertion_point(field_mutable_map:bar.MyMessage.mp)
-  return _internal_mutable_mp();
+MyMessage::mutable_stringmap() {
+  // @@protoc_insertion_point(field_mutable_map:bar.MyMessage.stringMap)
+  return _internal_mutable_stringmap();
+}
+
+// map<uint32, .bar.MyEnum> enumMap = 8;
+inline int MyMessage::_internal_enummap_size() const {
+  return enummap_.size();
+}
+inline int MyMessage::enummap_size() const {
+  return _internal_enummap_size();
+}
+inline void MyMessage::clear_enummap() {
+  enummap_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >&
+MyMessage::_internal_enummap() const {
+  return enummap_.GetMap();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >&
+MyMessage::enummap() const {
+  // @@protoc_insertion_point(field_map:bar.MyMessage.enumMap)
+  return _internal_enummap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >*
+MyMessage::_internal_mutable_enummap() {
+  return enummap_.MutableMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MyEnum >*
+MyMessage::mutable_enummap() {
+  // @@protoc_insertion_point(field_mutable_map:bar.MyMessage.enumMap)
+  return _internal_mutable_enummap();
+}
+
+// map<uint32, .bar.MySmallMessage> structMap = 9;
+inline int MyMessage::_internal_structmap_size() const {
+  return structmap_.size();
+}
+inline int MyMessage::structmap_size() const {
+  return _internal_structmap_size();
+}
+inline void MyMessage::clear_structmap() {
+  structmap_.Clear();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >&
+MyMessage::_internal_structmap() const {
+  return structmap_.GetMap();
+}
+inline const ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >&
+MyMessage::structmap() const {
+  // @@protoc_insertion_point(field_map:bar.MyMessage.structMap)
+  return _internal_structmap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >*
+MyMessage::_internal_mutable_structmap() {
+  return structmap_.MutableMap();
+}
+inline ::PROTOBUF_NAMESPACE_ID::Map< ::PROTOBUF_NAMESPACE_ID::uint32, ::bar::MySmallMessage >*
+MyMessage::mutable_structmap() {
+  // @@protoc_insertion_point(field_mutable_map:bar.MyMessage.structMap)
+  return _internal_mutable_structmap();
 }
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

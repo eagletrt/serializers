@@ -55,10 +55,15 @@ MyMessage::MyMessage(const bar::MyMessage& proto) {
     str = proto.str();
     enm = static_cast<MyEnum>(proto.enm());
     mySmallMessage = proto.mysmallmessage();
-    vec = {proto.vec().begin(), proto.vec().end()};
-    enums.resize(proto.enums().size());
-    std::transform(proto.enums().begin(), proto.enums().end(), enums.begin(), [](const auto& e) { return static_cast<MyEnum>(e); }); 
-    mp = {proto.mp().begin(), proto.mp().end()};
+    for(const auto& e : proto.enumvec()) {
+        enumVec.push_back(static_cast<MyEnum>(e));
+    }
+    structVec = {proto.structvec().begin(), proto.structvec().end()};
+    stringMap = {proto.stringmap().begin(), proto.stringmap().end()};
+    for(const auto& p : proto.enummap()) {
+        enumMap.emplace(p.first, static_cast<MyEnum>(p.second));
+    }
+    structMap = {proto.structmap().begin(), proto.structmap().end()};
 }
 
 MyMessage::operator bar::MyMessage() const {
@@ -67,10 +72,15 @@ MyMessage::operator bar::MyMessage() const {
     ret.set_str(str);
     ret.set_enm(static_cast<bar::MyEnum>(enm));
     *(ret.mutable_mysmallmessage()) = mySmallMessage;
-    *(ret.mutable_vec()) = {vec.begin(), vec.end()};
-    ret.mutable_enums()->Resize(enums.size(), 0);
-    std::transform(enums.begin(), enums.end(), ret.mutable_enums()->begin(), [](const auto& e) { return static_cast<bar::MyEnum>(e); });
-    *(ret.mutable_mp()) = {mp.begin(), mp.end()};
+    for(const auto& e : enumVec) {
+        ret.mutable_enumvec()->Add(static_cast<bar::MyEnum>(e));
+    }
+    *(ret.mutable_structvec()) = {structVec.begin(), structVec.end()};
+    *(ret.mutable_stringmap()) = {stringMap.begin(), stringMap.end()};
+    for(const auto& p : enumMap) {
+        ret.mutable_enummap()->operator[](p.first) = static_cast<bar::MyEnum>(p.second);
+    }
+    *(ret.mutable_structmap()) = {structMap.begin(), structMap.end()};
     return ret;
 }
 
