@@ -13,8 +13,6 @@ parser.add_argument("output_dir", type=str, help="directory path of generated fi
 
 with open("src/templates/wrapper.h.j2", "r") as f:
     h_template = jinja2.Template(f.read())
-# with open("src/templates/wrapper.cc.j2", "r") as f:
-#     cpp_template = jinja2.Template(f.read())
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -39,14 +37,11 @@ if __name__ == "__main__":
             enums = list(filter(lambda e: isinstance(e, Enum), schema.file_elements))
 
             if package is None:
-                print("No package found for file {filename}, aborting")
+                print(f"No package found for file {filename}, aborting")
                 exit(1)
+            else:
+                schema.file_elements.remove(package)
 
-            for file_element in list(filter(lambda e: isinstance(e, Message),schema.file_elements)):
-                for field in file_element.elements:
-                    proto_utils.set_correct_type(field)
 
             with open(os.path.join(args.output_dir, "inc", f"{package.name}.h"), "w") as f:
-                f.write(h_template.render(messages=messages, enums=enums, package=package))
-            # with open(os.path.join(args.output_dir, "src", f"{package.name}.cpp"), "w") as f:
-            #     f.write(cpp_template.render(messages=messages, package=package))
+                f.write(h_template.render(file_elements=schema.file_elements, package=package, proto_utils=proto_utils))

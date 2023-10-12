@@ -19,7 +19,7 @@ TYPES_MAP = {
     "sint64": "int64_t"
 }
 
-def __typeof(field_type: str) -> str:
+def typeof(field_type: str) -> str:
     return field_type if field_type not in TYPES_MAP else TYPES_MAP[field_type]
 
 def get_package(file_elements: list[FileElement]) -> Package:
@@ -27,11 +27,3 @@ def get_package(file_elements: list[FileElement]) -> Package:
         if isinstance(file_element, Package):
             return file_element
     return None
-
-def set_correct_type(field: MessageElement) -> None:
-    if isinstance(field, MapField):
-        setattr(field, "type", f"std::unordered_map<{__typeof(field.key_type)}, {__typeof(field.value_type)}>")
-    elif isinstance(field, Field) and field.cardinality == FieldCardinality.REPEATED:
-        field.type = f"std::vector<{__typeof(field.type)}>"
-    else:
-        field.type = TYPES_MAP[field.type] if field.type in TYPES_MAP else field.type
