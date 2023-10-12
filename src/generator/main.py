@@ -1,7 +1,7 @@
 import argparse
 import os
 import json
-import proto_utils
+import utils
 import jinja2
 from proto_schema_parser import Parser, Field, Message
 from proto_schema_parser.ast import OneOf, Enum
@@ -13,6 +13,8 @@ parser.add_argument("output_dir", type=str, help="directory path of generated fi
 
 with open("src/templates/wrapper.h.j2", "r") as f:
     h_template = jinja2.Template(f.read())
+with open("src/templates/wrapper.cc.j2", "r") as f:
+    cc_template = jinja2.Template(f.read())
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -32,7 +34,7 @@ if __name__ == "__main__":
 
             schema = Parser().parse(f.read())
 
-            package = proto_utils.get_package(schema.file_elements)
+            package = utils.get_package(schema.file_elements)
             messages = list(filter(lambda e: isinstance(e, Message), schema.file_elements))
             enums = list(filter(lambda e: isinstance(e, Enum), schema.file_elements))
 
@@ -44,4 +46,6 @@ if __name__ == "__main__":
 
 
             with open(os.path.join(args.output_dir, "inc", f"{package.name}.h"), "w") as f:
-                f.write(h_template.render(file_elements=schema.file_elements, package=package, proto_utils=proto_utils))
+                f.write(h_template.render(file_elements=schema.file_elements, package=package, utils=utils))
+            with open(os.path.join(args.output_dir, "src", f"{package.name}.cc"), "w") as f:
+                f.write(cc_template.render(file_elements=schema.file_elements, package=package, utils=utils))

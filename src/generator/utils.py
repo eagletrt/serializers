@@ -1,5 +1,5 @@
 from proto_schema_parser import Parser
-from proto_schema_parser.ast import Field, MessageElement, FileElement, Package, MapField, FieldCardinality
+from proto_schema_parser.ast import Field, Message, FileElement, Package, MapField, FieldCardinality, Enum
 
 TYPES_MAP = {
     "int32": "int32_t",
@@ -27,3 +27,11 @@ def get_package(file_elements: list[FileElement]) -> Package:
         if isinstance(file_element, Package):
             return file_element
     return None
+
+def is_enum(field_type: str, file_elements: list) -> bool:
+    filtered = list(filter(lambda e: isinstance(e, Enum), file_elements))
+    return field_type in list(map(lambda f: f.name, filtered))
+
+def is_message(field_type: str, file_elements: list) -> bool:
+    filtered = list(filter(lambda e: isinstance(e, Message), file_elements))
+    return field_type in list(map(lambda f: f.name, filtered))

@@ -27,11 +27,11 @@ struct {{ element.name }} {
 
     {% for field in element.elements -%}
     {% if field.__class__.__name__ == "MapField" -%}
-    std::unordered_map<{{ proto_utils.typeof(field.key_type) }}, {{ proto_utils.typeof(field.value_type) }}> {{ field.name }};
+    std::unordered_map<{{ utils.typeof(field.key_type) }}, {{ utils.typeof(field.value_type) }}> {{ field.name }};
     {% elif field.cardinality == "REPEATED" -%}
-    std::vector<{{ proto_utils.typeof(field.type) }}> {{field.name}};
+    std::vector<{{ utils.typeof(field.type) }}> {{field.name}};
     {% else -%}
-    {{ proto_utils.typeof(field.type) }} {{ field.name }};
+    {{ utils.typeof(field.type) }} {{ field.name }};
     {% endif -%}
     {%- endfor %}
 
