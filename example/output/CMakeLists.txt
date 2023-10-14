@@ -9,9 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 add_library(
-    ${PROJECT_NAME} 
-    
-    STATIC 
-    
+    ${PROJECT_NAME}
+    STATIC
+
     src/bar.cpp
+    src/foo.cpp
+    
 )

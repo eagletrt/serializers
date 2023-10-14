@@ -12,7 +12,7 @@ add_library(
     ${PROJECT_NAME}
     STATIC
 
-    {%+ for package in packages -%}
-    src/{{ package.name }}.cpp
+    {%+ for filename in filenames -%}
+    src/{{ filename }}.cpp
     {% endfor %}
 )

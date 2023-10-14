@@ -1,7 +1,7 @@
-#ifndef {{ package.name.upper() }}_HPP
-#define {{ package.name.upper() }}_HPP
+#ifndef {{ filename.upper() }}_HPP
+#define {{ filename.upper() }}_HPP
 
-#include "{{ package.name }}.pb.h"
+#include "{{ filename }}.pb.h"
 
 #include <cstdint>
 #include <string>
@@ -10,7 +10,7 @@
 
 namespace Serializers
 {
-{% for element in file_elements -%}
+{%- for element in file_elements -%}
 {% if element.__class__.__name__ == "Enum" -%}
 enum class {{ element.name }}
 {

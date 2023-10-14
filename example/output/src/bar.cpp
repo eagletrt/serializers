@@ -1,8 +1,8 @@
-#include "bar.hpp"
+#include "bar.h"
 
 #include <google/protobuf/util/json_util.h>
 
-namespace Serializers 
+namespace Serializers
 {
 MySmallMessage::MySmallMessage(const bar::MySmallMessage& proto) {
     val = proto.val();
