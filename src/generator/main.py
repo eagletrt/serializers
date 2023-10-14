@@ -48,12 +48,19 @@ if __name__ == "__main__":
                 packages.append(package)
                 schema.file_elements.remove(package)
 
+            print(f"Running generation of files for package '{package.name}'...")
 
             with open(os.path.join(args.output_dir, f"{package.name}.h"), "w") as f:
                 f.write(h_template.render(file_elements=schema.file_elements, package=package, utils=utils))
+                print(f"✅ Written header file '{os.path.join(args.output_dir, f'{package.name}.h')}'")
             with open(os.path.join(args.output_dir, "src", f"{package.name}.cpp"), "w") as f:
                 f.write(cc_template.render(file_elements=schema.file_elements, package=package, utils=utils))
+                print(f"✅ Written source file '{os.path.join(args.output_dir, 'src', f'{package.name}.cpp')}'", end="\n\n")
+
+    print(f"Running generation of CMakeLists.txt...")
 
     with open(os.path.join(args.output_dir, "CMakeLists.txt"), "w") as f:
         f.write(cmake_template.render(packages=packages))
+        print(f"✅ Written CMake file '{os.path.join(args.output_dir, 'CMakeLists.txt')}'", end="\n\n")
 
+    print("All files have successfully written!")
