@@ -1,9 +1,10 @@
 .vscode/
 .idea/
+.generated/
 
 bin/
 build/
 test/
+generated/
 
 __pycache__
-.generated/

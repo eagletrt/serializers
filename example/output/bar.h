@@ -23,7 +23,7 @@ enum class MyEnum
     MY_ENUM_2 = 2
 };
 
-struct MySmallMessage 
+struct MySmallMessage
 {
     int64_t val;
     
@@ -37,7 +37,7 @@ struct MySmallMessage
     bool deserializeFromJsonString(const std::string& str);
 };
 
-struct MyMessage 
+struct MyMessage
 {
     double val;
     std::string str;

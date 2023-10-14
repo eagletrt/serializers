@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package bar;
+
+message AnotherSmallMessage
+{
+    int64 val = 1;
+}

@@ -1,10 +1,9 @@
-#include "{{ package.name }}.h"
+#include "{{ filename }}.h"
 
 #include <google/protobuf/util/json_util.h>
 
 namespace Serializers
 {
-
 {% for element in file_elements -%}
 {% if element.__class__.__name__ == "Message" -%}
 {{ element.name }}::{{ element.name }}(const {{ package.name }}::{{ element.name }}& proto) {
@@ -100,8 +99,8 @@ bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
         return false;
     }
 }
-
-{% endif %}
-{%- endfor -%}
-
+{% if not loop.last %}
+{% endif -%}
+{% endif -%}
+{% endfor -%}
 }
