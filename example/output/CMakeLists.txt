@@ -14,5 +14,4 @@ add_library(
 
     src/bar.cpp
     src/foo.cpp
-    
 )
