@@ -2,7 +2,7 @@
 
 #include <google/protobuf/util/json_util.h>
 
-namespace Serializers
+namespace Serializers 
 {
 MySmallMessage::MySmallMessage(const bar::MySmallMessage& proto) {
     val = proto.val();
@@ -30,7 +30,7 @@ bool MySmallMessage::deserializeFromProtobufString(const std::string& str) {
 }
 
 std::string MySmallMessage::serializeAsJsonString() const {
-    bar:MySmallMessage proto(*this);
+    bar::MySmallMessage proto(*this);
     std::string ret;
     google::protobuf::util::JsonPrintOptions options;
     options.add_whitespace = true;
@@ -48,7 +48,6 @@ bool MySmallMessage::deserializeFromJsonString(const std::string& str) {
         return false;
     }
 }
-
 
 MyMessage::MyMessage(const bar::MyMessage& proto) {
     val = proto.val();
@@ -100,7 +99,7 @@ bool MyMessage::deserializeFromProtobufString(const std::string& str) {
 }
 
 std::string MyMessage::serializeAsJsonString() const {
-    bar:MyMessage proto(*this);
+    bar::MyMessage proto(*this);
     std::string ret;
     google::protobuf::util::JsonPrintOptions options;
     options.add_whitespace = true;

@@ -13,14 +13,13 @@ parser.add_argument("output_dir", type=str, help="directory path of generated fi
 
 with open("src/templates/wrapper.h.j2", "r") as f:
     h_template = jinja2.Template(f.read())
-with open("src/templates/wrapper.cc.j2", "r") as f:
+with open("src/templates/wrapper.cpp.j2", "r") as f:
     cc_template = jinja2.Template(f.read())
 
 if __name__ == "__main__":
     args = parser.parse_args()
 
     os.path.isdir(args.proto_dir) or parser.error(f"{args.proto_dir} is not a directory")
-    os.makedirs(os.path.join(args.output_dir, "inc"), exist_ok=True)
     os.makedirs(os.path.join(args.output_dir, "src"), exist_ok=True)
 
     for filename in os.listdir(args.proto_dir):
@@ -45,7 +44,7 @@ if __name__ == "__main__":
                 schema.file_elements.remove(package)
 
 
-            with open(os.path.join(args.output_dir, "inc", f"{package.name}.h"), "w") as f:
+            with open(os.path.join(args.output_dir, "", f"{package.name}.h"), "w") as f:
                 f.write(h_template.render(file_elements=schema.file_elements, package=package, utils=utils))
-            with open(os.path.join(args.output_dir, "src", f"{package.name}.cc"), "w") as f:
+            with open(os.path.join(args.output_dir, "src", f"{package.name}.cpp"), "w") as f:
                 f.write(cc_template.render(file_elements=schema.file_elements, package=package, utils=utils))
