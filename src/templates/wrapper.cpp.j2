@@ -1,0 +1,107 @@
+#include "{{ package.name }}.h"
+
+#include <google/protobuf/util/json_util.h>
+
+namespace Serializers
+{
+
+{% for element in file_elements -%}
+{% if element.__class__.__name__ == "Message" -%}
+{{ element.name }}::{{ element.name }}(const {{ package.name }}::{{ element.name }}& proto) {
+    {%- for field in element.elements -%}
+    {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
+    {# Map of enum #}
+    for(const auto& p : proto.{{ field.name.lower() }}()) {
+        {{ field.name }}.emplace(p.first, static_cast<{{ field.value_type }}>(p.second));
+    }
+    {%- elif field.cardinality == "REPEATED" and utils.is_enum(field.type, file_elements) -%}
+    {# Vector of enums #}
+    for(const auto& e : proto.{{ field.name.lower() }}()) {
+        {{ field.name }}.push_back(static_cast<{{field.type}}>(e));
+    }
+    {%- elif field.__class__.__name__ == "MapField" or
+            (field.cardinality == "REPEATED" and utils.is_message(field.type, file_elements))
+    -%}
+    {# Map OR vector of message #}
+    {{ field.name }} = {proto.{{ field.name.lower() }}().begin(), proto.{{ field.name.lower() }}().end()};
+    {%- elif utils.is_enum(field.type, file_elements) -%}
+    {# Enum field #}
+    {{ field.name }} = static_cast<{{ field.type }}>(proto.{{ field.name.lower() }}());
+    {%- else -%}
+    {# Other cases #}
+    {{ field.name }} = proto.{{ field.name.lower() }}();
+    {%- endif -%}
+    {% endfor %}
+}
+
+{{ element.name }}::operator {{ package.name }}::{{ element.name }}() const {
+    {{ package.name }}::{{ element.name }} ret;
+    {%- for field in element.elements -%}
+    {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
+    {# Map of enum #}
+    for(const auto& p : {{ field.name }}) {
+        ret.mutable_{{ field.name.lower() }}()->operator[](p.first) = static_cast<{{ package.name }}::{{ field.value_type }}>(p.second);
+    }
+    {%- elif field.cardinality == "REPEATED" and utils.is_enum(field.type, file_elements) -%}
+    {# Vector of enums #}
+    for(const auto& e : {{ field.name }}) {
+        ret.mutable_{{ field.name.lower() }}()->Add(static_cast<{{ package.name }}::{{ field.type }}>(e));
+    }
+    {%- elif field.__class__.__name__ == "MapField" or
+            (field.cardinality == "REPEATED" and utils.is_message(field.type, file_elements))
+    -%}
+    {# Map OR vector of message #}
+    *(ret.mutable_{{ field.name.lower() }}()) = {{ "{" }}{{ field.name }}.begin(), {{ field.name }}.end()};
+    {%- elif utils.is_enum(field.type, file_elements) -%}
+    {# Enum field #}
+    ret.set_{{ field.name.lower() }}(static_cast<{{ package.name }}::{{ field.type }}>({{ field.name }}));
+    {%- elif utils.is_message(field.type, file_elements) -%}
+    {# Message field #}
+    *(ret.mutable_{{ field.name.lower() }}()) = {{ field.name }};
+    {%- else -%}
+    {# Other cases #}
+    ret.set_{{ field.name.lower() }}({{ field.name }});
+    {%- endif -%}
+    {% endfor %}
+    return ret;
+}
+
+std::string {{ element.name }}::serializeAsProtobufString() const {
+    {{ package.name }}::{{ element.name }} proto(*this);
+    return proto.SerializeAsString();
+}
+
+bool {{ element.name }}::deserializeFromProtobufString(const std::string& str) {
+    {{ package.name }}::{{ element.name }} proto;
+    if(proto.ParseFromString(str)) {
+        *this = proto;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+std::string {{ element.name }}::serializeAsJsonString() const {
+    {{ package.name }}::{{ element.name }} proto(*this);
+    std::string ret;
+    google::protobuf::util::JsonPrintOptions options;
+    options.add_whitespace = true;
+    google::protobuf::util::MessageToJsonString(proto, &ret, options);
+    return ret;
+}
+
+bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
+    {{ package.name }}::{{ element.name }} proto;
+    auto status = google::protobuf::util::JsonStringToMessage(str, &proto);
+    if(status.ok()) {
+        *this = proto;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+{% endif %}
+{%- endfor -%}
+
+}

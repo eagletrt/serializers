@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package bar;
+
+enum MySmallEnum
+{
+    MY_SMALL_ENUM_0 = 0;
+    My_SMALL_ENUM_1 = 1;
+}
+
+enum MyEnum
+{
+    MY_ENUM_0 = 0;
+    My_ENUM_1 = 1;
+    MY_ENUM_2 = 2;
+}
+
+message MySmallMessage
+{
+    int64 val = 1;
+}
+
+message MyMessage
+{
+    double val = 1;
+    string str = 2;
+    MyEnum enm = 3;
+    MySmallMessage mySmallMessage = 4;
+    repeated MyEnum enumVec = 5;
+    repeated MySmallMessage structVec = 6;
+    map<uint32, string> stringMap = 7;
+    map<uint32, MyEnum> enumMap = 8;
+    map<uint32, MySmallMessage> structMap = 9;
+}

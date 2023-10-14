@@ -1,0 +1,9 @@
+.vscode/
+.idea/
+
+bin/
+build/
+test/
+
+__pycache__
+.generated/

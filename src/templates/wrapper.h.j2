@@ -1,0 +1,52 @@
+#ifndef {{ package.name.upper() }}_HPP
+#define {{ package.name.upper() }}_HPP
+
+#include "{{ package.name }}.pb.h"
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+namespace Serializers
+{
+{%- for element in file_elements -%}
+{% if element.__class__.__name__ == "Enum" %}
+enum class {{ element.name }}
+{
+    {%- for field in element.elements +%}
+    {{field.name}} = {{field.number}}
+    {%- if not loop.last -%}
+    ,
+    {%- endif -%}
+    {%- endfor %}
+};
+{%- endif -%}
+{% endfor %}
+{% for element in file_elements -%}
+{%- if element.__class__.__name__ == "Message" -%}
+struct {{ element.name }}
+{
+    {% for field in element.elements -%}
+    {% if field.__class__.__name__ == "MapField" -%}
+    std::unordered_map<{{ utils.typeof(field.key_type) }}, {{ utils.typeof(field.value_type) }}> {{ field.name }};
+    {% elif field.cardinality == "REPEATED" -%}
+    std::vector<{{ utils.typeof(field.type) }}> {{field.name}};
+    {% else -%}
+    {{ utils.typeof(field.type) }} {{ field.name }};
+    {% endif -%}
+    {%- endfor %}
+    {{ element.name }}() = default;
+    {{ element.name }}(const bar::{{ element.name }}& proto);
+    operator {{ package.name }}::{{ element.name }}() const;
+
+    std::string serializeAsProtobufString() const;
+    std::string serializeAsJsonString() const;
+    bool deserializeFromProtobufString(const std::string& str);
+    bool deserializeFromJsonString(const std::string& str);
+};
+{% endif -%}
+{% endfor -%}
+}
+
+#endif
