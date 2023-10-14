@@ -21,8 +21,6 @@ enum class {{ element.name }}
     {%- endif -%}
     {%- endfor %}
 };
-{%- if not loop.last %}
-{% endif %}
 {%- endif -%}
 {% endfor %}
 {% for element in file_elements -%}

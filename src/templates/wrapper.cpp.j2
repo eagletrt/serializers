@@ -100,9 +100,8 @@ bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
         return false;
     }
 }
-{%- if not loop.last %}
+
 {% endif %}
-{% endif -%}
 {%- endfor -%}
 
 }
