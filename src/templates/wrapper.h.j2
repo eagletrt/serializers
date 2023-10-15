@@ -38,10 +38,10 @@ struct {{ element.name }}
     {{ element.name }}(const bar::{{ element.name }}& proto);
     operator {{ package.name }}::{{ element.name }}() const;
 
-    std::string serializeAsProtobufString() const;
     std::string serializeAsJsonString() const;
-    bool deserializeFromProtobufString(const std::string& str);
+    std::string serializeAsProtobufString() const;
     bool deserializeFromJsonString(const std::string& str);
+    bool deserializeFromProtobufString(const std::string& str);
 };
 {% endif -%}
 {% if not loop.last %}
