@@ -35,7 +35,7 @@ struct {{ element.name }}
     {% endif -%}
     {%- endfor %}
     {{ element.name }}() = default;
-    {{ element.name }}(const bar::{{ element.name }}& proto);
+    {{ element.name }}(const {{ package.name }}::{{ element.name }}& proto);
     operator {{ package.name }}::{{ element.name }}() const;
 
     std::string serializeAsJsonString() const;
