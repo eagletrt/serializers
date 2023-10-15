@@ -33,9 +33,9 @@ if __name__ == "__main__":
     os.makedirs(os.path.join(args.output_dir, "src"), exist_ok=True)
 
     for proto_filename in os.listdir(args.proto_dir):
-
         if not proto_filename.endswith(".proto"):
             continue
+        
         filename = proto_filename.split('.proto')[0]
 
         with open(os.path.join(args.proto_dir, proto_filename), "r") as proto_file:
@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
             if not package.name in packages_definitions:
                 packages_definitions[package.name] = []
+                
             filenames.append(filename)
 
             for element in schema.file_elements:
