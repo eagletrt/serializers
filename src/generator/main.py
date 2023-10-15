@@ -1,6 +1,5 @@
 import argparse
 import os
-import json
 import utils
 import jinja2
 from proto_schema_parser import Parser, Field, Message
@@ -21,6 +20,7 @@ with open("src/templates/CMakeLists.txt.j2", "r") as f:
 if __name__ == "__main__":
     args = parser.parse_args()
     filenames: list[str] = []
+    packages_definitions: dict[str, str] = {}
 
     os.path.isdir(args.proto_dir) or parser.error(f"{args.proto_dir} is not a directory")
     os.makedirs(os.path.join(args.output_dir, "src"), exist_ok=True)
@@ -29,7 +29,6 @@ if __name__ == "__main__":
 
         if not proto_filename.endswith(".proto"):
             continue
-        
         filename = proto_filename.split('.proto')[0]
 
         with open(os.path.join(args.proto_dir, proto_filename), "r") as f:
@@ -40,9 +39,17 @@ if __name__ == "__main__":
             if package is None:
                 print(f"No package found for file {proto_filename}, aborting")
                 exit(1)
-            else:
-                filenames.append(filename)
-                
+
+            if not package.name in packages_definitions:
+                packages_definitions[package.name] = []
+            filenames.append(filename)
+
+            for element in schema.file_elements:
+                if element.__class__.__name__ != "Package" and element.name in packages_definitions[package.name]:
+                    print(f"Multiple definition of element {package.name}.{element.name}, aborting...")
+                    exit(1)
+                packages_definitions[package.name].append(element.name)
+
             print(f'Generating files for {proto_filename}...')
 
             with open(os.path.join(args.output_dir, f"{filename}.h"), "w") as f:
