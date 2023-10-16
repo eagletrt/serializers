@@ -1,5 +1,5 @@
-#ifndef {{ filename.upper() }}_HPP
-#define {{ filename.upper() }}_HPP
+#ifndef {{ filename.upper() }}_H
+#define {{ filename.upper() }}_H
 
 #include "{{ filename }}.pb.h"
 
@@ -27,21 +27,21 @@ struct {{ element.name }}
 {
     {% for field in element.elements -%}
     {% if field.__class__.__name__ == "MapField" -%}
-    std::unordered_map<{{ utils.typeof(field.key_type) }}, {{ utils.typeof(field.value_type) }}> {{ field.name }};
+    std::unordered_map<{{ utils.typeof(field.key_type, packages_definitions[package.name]) }}, {{ utils.typeof(field.value_type, packages_definitions[package.name]) }}> {{ field.name }};
     {% elif field.cardinality == "REPEATED" -%}
-    std::vector<{{ utils.typeof(field.type) }}> {{field.name}};
+    std::vector<{{ utils.typeof(field.type, packages_definitions[package.name]) }}> {{field.name}};
     {% else -%}
-    {{ utils.typeof(field.type) }} {{ field.name }};
+    {{ utils.typeof(field.type, packages_definitions[package.name]) }} {{ field.name }};
     {% endif -%}
     {%- endfor %}
     {{ element.name }}() = default;
-    {{ element.name }}(const bar::{{ element.name }}& proto);
+    {{ element.name }}(const {{ package.name }}::{{ element.name }}& proto);
     operator {{ package.name }}::{{ element.name }}() const;
 
-    std::string serializeAsProtobufString() const;
     std::string serializeAsJsonString() const;
-    bool deserializeFromProtobufString(const std::string& str);
+    std::string serializeAsProtobufString() const;
     bool deserializeFromJsonString(const std::string& str);
+    bool deserializeFromProtobufString(const std::string& str);
 };
 {% endif -%}
 {% if not loop.last %}
