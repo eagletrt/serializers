@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
     for (filename, (package, schema)) in files:
         print(f'Generating files for {filename}.proto...')
-        with open(os.path.join(args.output_dir, f"{filename}.h"), "w") as f:
+        with open(os.path.join(args.output_dir, "inc", f"{filename}.h"), "w") as f:
             f.write(h_template.render(file_elements=schema.file_elements, filename=filename, package=package, utils=utils, packages_definitions=definitions))
             print(f"✅ Generated header file {os.path.join(args.output_dir, f'{filename}.h')}")
         with open(os.path.join(args.output_dir, "src", f"{filename}.cpp"), "w") as f:
@@ -49,5 +49,15 @@ if __name__ == "__main__":
     with open(os.path.join(args.output_dir, "CMakeLists.txt"), "w") as f:
         f.write(cmake_template.render(filenames=list(map(lambda f: f[0], files))))
         print(f"✅ Generated CMake file {os.path.join(args.output_dir, 'CMakeLists.txt')}", end="\n\n")
+
+    print(f"Copying .proto files in '{args.proto_dir}/proto/' directory...")
+    for filename in os.listdir(args.proto_dir):
+        # Skip non-proto files
+        if not filename.endswith(".proto"):
+            continue
+
+        with open(os.path.join(args.proto_dir, filename), "r") as source:
+            with open(os.path.join(args.output_dir, "proto", filename), "w") as destination:
+                destination.write(source.read())
 
     print("Generated all files correctly!")
