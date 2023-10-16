@@ -2,9 +2,9 @@
 .idea/
 .generated/
 
-bin/
 build/
+bin/
+out/
 test/
-generated/
 
-__pycache__
+__pycache__/
