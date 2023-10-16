@@ -1,0 +1,7 @@
+#ifndef SERIALIZERS_H
+#define SERIALIZERS_H
+
+{% for filename in filenames -%}
+#include "{{ filename }}.h"
+{% endfor %}
+#endif
