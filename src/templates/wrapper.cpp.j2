@@ -65,21 +65,6 @@ namespace Serializers
     return ret;
 }
 
-std::string {{ element.name }}::serializeAsProtobufString() const {
-    {{ package.name }}::{{ element.name }} proto(*this);
-    return proto.SerializeAsString();
-}
-
-bool {{ element.name }}::deserializeFromProtobufString(const std::string& str) {
-    {{ package.name }}::{{ element.name }} proto;
-    if(proto.ParseFromString(str)) {
-        *this = proto;
-        return true;
-    } else {
-        return false;
-    }
-}
-
 std::string {{ element.name }}::serializeAsJsonString() const {
     {{ package.name }}::{{ element.name }} proto(*this);
     std::string ret;
@@ -89,10 +74,25 @@ std::string {{ element.name }}::serializeAsJsonString() const {
     return ret;
 }
 
+std::string {{ element.name }}::serializeAsProtobufString() const {
+    {{ package.name }}::{{ element.name }} proto(*this);
+    return proto.SerializeAsString();
+}
+
 bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
     {{ package.name }}::{{ element.name }} proto;
     auto status = google::protobuf::util::JsonStringToMessage(str, &proto);
     if(status.ok()) {
+        *this = proto;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool {{ element.name }}::deserializeFromProtobufString(const std::string& str) {
+    {{ package.name }}::{{ element.name }} proto;
+    if(proto.ParseFromString(str)) {
         *this = proto;
         return true;
     } else {
