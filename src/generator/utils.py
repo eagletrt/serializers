@@ -79,6 +79,9 @@ def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, 
 
         # Check multiple definitions
         for element in schema.file_elements:
+            if element is None:
+                schema.file_elements.remove(element)
+                continue
             if element.name in definitions[package.name]:
                 print(f"Multiple definition of element {package.name}.{element.name}, aborting...")
                 exit(1)
