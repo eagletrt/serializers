@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Check if arguments are provided
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <proto_dir> <src_dir> <header_dir>"
+    exit 1
+fi
+
+PROTO_FILES=$(ls -m $1 | grep -o '[^ ]*\.proto' | tr ', ' ' ')
+
+# Generate schemas in $2/schemas from proto files in $1
+protoc \
+    --proto_path=$1 \
+    --cpp_out=$2 \
+    $PROTO_FILES
+
+mv $2/*.pb.h $3
