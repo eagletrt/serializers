@@ -10,8 +10,8 @@
 
 namespace Serializers
 {
-{%- for element in file_elements -%}
-{% if element.__class__.__name__ == "Enum" -%}
+{% for element in file_elements %}
+{%- if element.__class__.__name__ == "Enum" -%}
 enum class {{ element.name }}
 {
     {%- for field in element.elements +%}
