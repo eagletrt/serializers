@@ -11,7 +11,7 @@ add_library(
     STATIC
 
     {% for filename in filenames -%}
-    src/{{ filename }}.cpp
+    src/{{ filepaths[loop.index - 1] }}{{ filename }}.cpp
     {%- if not loop.last %}
     {% endif -%}
     {%- endfor %}

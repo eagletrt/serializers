@@ -2,6 +2,6 @@
 #define SERIALIZERS_H
 
 {% for filename in filenames -%}
-#include "{{ filename }}.h"
+#include "{{ filepaths[loop.index - 1] }}{{ filename }}.h"
 {% endfor %}
 #endif

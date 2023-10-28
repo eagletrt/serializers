@@ -43,48 +43,61 @@ def is_message(field_type: str, file_elements: list) -> bool:
     filtered = list(filter(lambda e: isinstance(e, Message), file_elements))
     return field_type in list(map(lambda f: f.name, filtered))
 
+def dir_file_paths(dir, ext):
+    files_paths = []
+        
+    for entry in os.scandir(dir):        
+        if entry.is_dir():
+            files_paths.extend(dir_file_paths(entry, ext))
+        elif entry.is_file():
+            if os.path.splitext(entry.name)[1].lower() == ext:
+                files_paths.append(entry.path)
+        
+    return files_paths
+
 def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, str]):
 
     # (filename, (package, file_schema))
     files: list[(str, (Package, File))] = []
-    definitions: dict[str, str] = {}
-
-    for filename in os.listdir(directory_path):
-
-        # Skip non-proto files
-        if not filename.endswith(".proto"):
-            continue
+    package_definitions: dict[str, str] = {}
+    
+    for filepath in dir_file_paths(directory_path, '.proto'):
 
         # Read and parse schema
-        with open(os.path.join(directory_path, filename), "r") as f:
-            schema = Parser().parse(f.read())
+        with open(filepath, "r") as file:
+            schema = Parser().parse(file.read())
+            
+        filepath = filepath.split('proto/')[1]
+        filename = filepath.split('/')[-1]
+        filepath = filepath.split(filename)[0]
         filename = filename.split('.proto')[0]
-
+        
         # Throw error if package has not set
         package = get_package(schema.file_elements)
         if package is None:
-            print(f"No package found for file {filename}.proto, aborting")
+            print(f'No package found for file {filename}.proto, aborting')
             exit(1)
         schema.file_elements.remove(package)
 
         # Check multiple package definition
         if get_package(schema.file_elements) is not None:
-            print(f"Multiple package definition for file {filename}.proto, aborting...")
+            print(f'Multiple package definition for file {filename}.proto, aborting...')
             exit(1)
 
         # Append schema and definitions to the lists
-        files.append((filename, (package, schema)))
-        if not package.name in definitions:
-            definitions[package.name] = []
+        files.append((filename, filepath, package, schema))
+        
+        if not package.name in package_definitions:
+            package_definitions[package.name] = []
 
         # Check multiple definitions
         for element in schema.file_elements:
             if element is None:
                 schema.file_elements.remove(element)
                 continue
-            if element.name in definitions[package.name]:
-                print(f"Multiple definition of element {package.name}.{element.name}, aborting...")
+            if element.name in package_definitions[package.name]:
+                print(f'Multiple definition of element {package.name}.{element.name}, aborting...')
                 exit(1)
-            definitions[package.name].append(element.name)
+            package_definitions[package.name].append(element.name)
 
-    return (files, definitions)
+    return (files, package_definitions)

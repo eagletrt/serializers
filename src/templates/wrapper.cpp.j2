@@ -1,12 +1,14 @@
-#include "{{ filename }}.h"
+#include "{{filepath}}{{ filename }}.h"
 
 #include <google/protobuf/util/json_util.h>
 
 namespace Serializers
 {
+namespace {{ package.name }}
+{
 {% for element in file_elements -%}
 {% if element.__class__.__name__ == "Message" -%}
-{{ element.name }}::{{ element.name }}(const {{ package.name }}::{{ element.name }}& proto) {
+{{ element.name }}::{{ element.name }}(const Protobuf{{ element.name }}& proto) {
     {%- for field in element.elements -%}
     {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
     {# Map of enum #}
@@ -18,10 +20,9 @@ namespace Serializers
     for(const auto& e : proto.{{ field.name.lower() }}()) {
         {{ field.name }}.push_back(static_cast<{{field.type}}>(e));
     }
-    {%- elif field.__class__.__name__ == "MapField" or
-            (field.cardinality == "REPEATED" and utils.is_message(field.type, file_elements))
+    {%- elif field.__class__.__name__ == "MapField" or (field.cardinality == "REPEATED")
     -%}
-    {# Map OR vector of message #}
+    {# Map OR vector #}
     {{ field.name }} = {proto.{{ field.name.lower() }}().begin(), proto.{{ field.name.lower() }}().end()};
     {%- elif utils.is_enum(field.type, file_elements) -%}
     {# Enum field #}
@@ -33,8 +34,8 @@ namespace Serializers
     {% endfor %}
 }
 
-{{ element.name }}::operator {{ package.name }}::{{ element.name }}() const {
-    {{ package.name }}::{{ element.name }} ret;
+{{ element.name }}::operator Protobuf{{ element.name }}() const {
+    Protobuf{{ element.name }} ret;
     {%- for field in element.elements -%}
     {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
     {# Map of enum #}
@@ -46,10 +47,9 @@ namespace Serializers
     for(const auto& e : {{ field.name }}) {
         ret.mutable_{{ field.name.lower() }}()->Add(static_cast<{{ package.name }}::{{ field.type }}>(e));
     }
-    {%- elif field.__class__.__name__ == "MapField" or
-            (field.cardinality == "REPEATED" and utils.is_message(field.type, file_elements))
+    {%- elif (field.__class__.__name__ == "MapField") or (field.cardinality == "REPEATED")
     -%}
-    {# Map OR vector of message #}
+    {# Map OR vector #}
     *(ret.mutable_{{ field.name.lower() }}()) = {{ "{" }}{{ field.name }}.begin(), {{ field.name }}.end()};
     {%- elif utils.is_enum(field.type, file_elements) -%}
     {# Enum field #}
@@ -66,7 +66,7 @@ namespace Serializers
 }
 
 std::string {{ element.name }}::serializeAsJsonString() const {
-    {{ package.name }}::{{ element.name }} proto(*this);
+    Protobuf{{ element.name }} proto(*this);
     std::string ret;
     google::protobuf::util::JsonPrintOptions options;
     options.add_whitespace = true;
@@ -75,12 +75,12 @@ std::string {{ element.name }}::serializeAsJsonString() const {
 }
 
 std::string {{ element.name }}::serializeAsProtobufString() const {
-    {{ package.name }}::{{ element.name }} proto(*this);
+    Protobuf{{ element.name }} proto(*this);
     return proto.SerializeAsString();
 }
 
 bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
-    {{ package.name }}::{{ element.name }} proto;
+    Protobuf{{ element.name }} proto;
     auto status = google::protobuf::util::JsonStringToMessage(str, &proto);
     if(status.ok()) {
         *this = proto;
@@ -91,7 +91,7 @@ bool {{ element.name }}::deserializeFromJsonString(const std::string& str) {
 }
 
 bool {{ element.name }}::deserializeFromProtobufString(const std::string& str) {
-    {{ package.name }}::{{ element.name }} proto;
+    Protobuf{{ element.name }} proto;
     if(proto.ParseFromString(str)) {
         *this = proto;
         return true;
@@ -103,4 +103,5 @@ bool {{ element.name }}::deserializeFromProtobufString(const std::string& str) {
 {% endif -%}
 {% endif -%}
 {% endfor -%}
+}
 }

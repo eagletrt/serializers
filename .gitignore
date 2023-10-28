@@ -6,5 +6,6 @@ build/
 bin/
 out/
 test/
+proto/
 
 __pycache__/

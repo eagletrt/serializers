@@ -8,7 +8,17 @@
 #include <vector>
 #include <unordered_map>
 
+{% for element in file_elements %}
+{%- if element.__class__.__name__ == "Enum" -%}
+typedef {{ package.name }}::{{ element.name }} Protobuf{{ element.name }};
+{% endif -%}
+{% if element.__class__.__name__ == "Message" -%}
+typedef {{ package.name }}::{{ element.name }} Protobuf{{ element.name }};
+{% endif -%}
+{%- endfor %}
 namespace Serializers
+{
+namespace {{ package.name }}
 {
 {% for element in file_elements %}
 {%- if element.__class__.__name__ == "Enum" -%}
@@ -27,16 +37,16 @@ struct {{ element.name }}
 {
     {% for field in element.elements -%}
     {% if field.__class__.__name__ == "MapField" -%}
-    std::unordered_map<{{ utils.typeof(field.key_type, packages_definitions[package.name]) }}, {{ utils.typeof(field.value_type, packages_definitions[package.name]) }}> {{ field.name }};
+    std::unordered_map<{{ utils.typeof(field.key_type, package_definitions[package.name]) }}, {{ utils.typeof(field.value_type, package_definitions[package.name]) }}> {{ field.name }};
     {% elif field.cardinality == "REPEATED" -%}
-    std::vector<{{ utils.typeof(field.type, packages_definitions[package.name]) }}> {{field.name}};
+    std::vector<{{ utils.typeof(field.type, package_definitions[package.name]) }}> {{field.name}};
     {% else -%}
-    {{ utils.typeof(field.type, packages_definitions[package.name]) }} {{ field.name }};
+    {{ utils.typeof(field.type, package_definitions[package.name]) }} {{ field.name }};
     {% endif -%}
     {%- endfor %}
     {{ element.name }}() = default;
-    {{ element.name }}(const {{ package.name }}::{{ element.name }}& proto);
-    operator {{ package.name }}::{{ element.name }}() const;
+    {{ element.name }}(const Protobuf{{ element.name }}& proto);
+    operator Protobuf{{ element.name }}() const;
 
     std::string serializeAsJsonString() const;
     std::string serializeAsProtobufString() const;
@@ -47,6 +57,7 @@ struct {{ element.name }}
 {% if not loop.last %}
 {% endif -%}
 {% endfor -%}
+}
 }
 
 #endif
