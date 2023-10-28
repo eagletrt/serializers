@@ -1,11 +1,11 @@
 .vscode/
 .idea/
 .generated/
+.test/
+.proto/
 
 build/
 bin/
 out/
-test/
-proto/
 
 __pycache__/
