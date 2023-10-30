@@ -8,14 +8,6 @@
 #include <vector>
 #include <unordered_map>
 
-{% for element in file_elements %}
-{%- if element.__class__.__name__ == "Enum" -%}
-typedef {{ package.name }}::{{ element.name }} {{ package.name }}{{ element.name }};
-{% endif -%}
-{% if element.__class__.__name__ == "Message" -%}
-typedef {{ package.name }}::{{ element.name }} {{ package.name }}{{ element.name }};
-{% endif -%}
-{%- endfor %}
 namespace Serializers
 {
 namespace {{ package.name }}
@@ -45,8 +37,8 @@ struct {{ element.name }}
     {% endif -%}
     {%- endfor %}
     {{ element.name }}() = default;
-    {{ element.name }}(const {{ package.name }}{{ element.name }}& proto);
-    operator {{ package.name }}{{ element.name }}() const;
+    {{ element.name }}(const Pb{{ package.name }}::{{ element.name }}& protobuf);
+    operator Pb{{ package.name }}::{{ element.name }}() const;
 
     std::string serializeAsJsonString() const;
     std::string serializeAsProtobufString() const;

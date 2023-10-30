@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import utils
 import jinja2
 
@@ -62,6 +63,7 @@ if __name__ == "__main__":
         with open(os.path.join(args.proto_dir, filepath, f'{filenames[i]}.proto'), "r") as source:
             os.makedirs(os.path.join(args.output_dir, "proto", filepath), exist_ok=True)
             with open(os.path.join(args.output_dir, 'proto', filepath, f'{filenames[i]}.proto'), "w") as destination:
-                destination.write(source.read())
+                result = re.sub(r'package\s+', r'package Pb', source.read())
+                destination.write(result)
 
     print("✅ Copied .proto files")
