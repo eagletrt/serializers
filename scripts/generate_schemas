@@ -18,11 +18,20 @@ fi
 mkdir -p $2/schemas
 
 # Generate schemas in $2/schemas from proto files in $1
-protoc \
-    --plugin=$EXECUTABLE_PATH \
-    --proto_path=$1 \
-    --jsonschema_out=$2/schemas \
-    --jsonschema_opt=enforce_oneof \
-    --jsonschema_opt=file_extension=schema.json \
-    --jsonschema_opt=disallow_additional_properties \
-    $PROTO_FILES
+for file in $1/*; do
+    if [ -d "$file" ]; then
+        for subfile in $file/*; do
+            if [ -f "$subfile" ]; then
+                protoc \
+                    --plugin=$EXECUTABLE_PATH \
+                    --proto_path=$1 \
+                    --jsonschema_out=$2/schemas \
+                    --jsonschema_opt=enforce_oneof \
+                    --jsonschema_opt=file_extension=schema.json \
+                    --jsonschema_opt=disallow_additional_properties \
+                    --jsonschema_opt=disallow_bigints_as_strings \
+                    $subfile
+            fi
+        done
+    fi
+done
