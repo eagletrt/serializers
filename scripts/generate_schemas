@@ -30,6 +30,7 @@ for file in $1/*; do
                     --jsonschema_opt=file_extension=schema.json \
                     --jsonschema_opt=disallow_additional_properties \
                     --jsonschema_opt=disallow_bigints_as_strings \
+                    --jsonschema_opt=all_fields_required \
                     $subfile
             fi
         done
