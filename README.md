@@ -93,7 +93,7 @@ struct MyMessage
 ```
 
 ## Usage
-- Generate the code with src/generator/main.py *proto_dir* *output_dir*.
+- Generate the code with: *python3 src/generator/main.py proto_dir output_dir*.
 - Copy the output directory in your project and generate the pb files with _protoc_, using
 the files in output_dir/proto.
 - Add add_subdirectory(path/to/output/directory) to your main CMakeLists.txt.
