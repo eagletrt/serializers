@@ -54,7 +54,7 @@ namespace {{ package.name }}
     *(ret.mutable_{{ field.name.lower() }}()) = {{ "{" }}{{ field.name }}.begin(), {{ field.name }}.end()};
     {%- elif utils.is_enum(field.type, file_elements) -%}
     {# Enum field #}
-    ret.set_{{ field.name.lower() }}(static_cast<{{ package.name }}::{{ field.type }}>({{ field.name }}));
+    ret.set_{{ field.name.lower() }}(static_cast<Pb{{ package.name }}::{{ field.type }}>({{ field.name }}));
     {%- elif utils.is_message(field.type, file_elements) -%}
     {# Message field #}
     *(ret.mutable_{{ field.name.lower() }}()) = {{ field.name }};
