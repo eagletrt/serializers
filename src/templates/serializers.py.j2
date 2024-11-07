@@ -1,0 +1,3 @@
+{% for filename in filenames -%}
+from ..{{output_dir}}.py.{{ filepaths[loop.index - 1][:-1] }} import {{ filename }}
+{% endfor %}

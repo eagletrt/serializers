@@ -1,6 +1,7 @@
-from proto_schema_parser import Parser
-from proto_schema_parser.ast import Message, FileElement, Package, Enum, File
 import os
+
+from proto_schema_parser import Parser
+from proto_schema_parser.ast import Enum, File, FileElement, Message, Package
 
 TYPES_MAP = {
     "int32": "int32_t",
@@ -20,6 +21,25 @@ TYPES_MAP = {
     "sint64": "int64_t"
 }
 
+TYPES_MAP_PY = {
+    "int32": "int",
+    "int64": "int",
+    "uint32": "int",
+    "uint64": "int",
+    "float": "float",
+    "double": "float",
+    "bool": "bool",
+    "string": "str",
+    "bytes": "bytes",
+    "fixed32": "int",
+    "fixed64": "int",
+    "sfixed32": "int",
+    "sfixed64": "int",
+    "sint32": "int",
+    "sint64": "int",
+    "string": "str",
+}
+
 def typeof(field_type: str, elements_names: list) -> str:
     if field_type in elements_names:
         return field_type
@@ -28,6 +48,18 @@ def typeof(field_type: str, elements_names: list) -> str:
     else:
         print(f"Field type '{field_type}' is not valid, aborting...")
         exit(1)
+
+def typeof_py(field_type: str, elements_names: list) -> str:
+    if field_type in elements_names:
+        return field_type
+    elif field_type in TYPES_MAP:
+        return TYPES_MAP_PY[field_type]
+    else:
+        print(f"Field type '{field_type}' is not valid, aborting...")
+        exit(1)
+
+def to_lower_case(string: str) -> str:
+    return string.lower()
 
 def get_package(file_elements: list[FileElement]) -> Package:
     for file_element in file_elements:

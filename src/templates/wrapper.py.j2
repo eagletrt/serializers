@@ -1,0 +1,96 @@
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import List, Dict
+
+from {{ utils.to_lower_case(package.name) }} import {{ filename }}_pb2
+from google.protobuf.json_format import MessageToJson, Parse
+
+{% for element in file_elements%}
+{%- if element.__class__.__name__ == "Enum" -%}
+class {{ element.name }}(Enum):
+    {%- for field in element.elements +%}
+    {{field.name}} = {{field.number}}
+    {%- endfor %}
+{% endif %}
+{% if element.__class__.__name__ == "Message" -%}
+@dataclass
+class {{ element.name }}:
+    {%- for field in element.elements %}
+    {%- if field.__class__.__name__ == "MapField" %}
+    {{ field.name }}: Dict[{{ utils.typeof_py(field.key_type, package_definitions[package.name]) }}, {{ utils.typeof_py(field.value_type, package_definitions[package.name]) }}] = field(default_factory=dict)
+    {%- elif field.cardinality == "REPEATED" %}
+    {{ field.name }}: List[{{ utils.typeof_py(field.type, package_definitions[package.name]) }}] = field(default_factory=list)
+    {%- elif field.type in package_definitions[package.name] %}
+    {{ field.name }}: {{ field.type }} = None
+    {%- else %}
+    {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
+    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
+    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0.0
+    {%- else %}
+    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = ""
+    {%- endif %}
+    {%- endif %}
+    {%- endfor %}
+    
+    _proto_message: {{ filename }}_pb2.{{ element.name }} = field(init=False, repr=False)
+
+    def __post_init__(self):
+        self._proto_message = {{ filename }}_pb2.{{ element.name }}()
+
+    def populate_proto(self):
+        {%- for field in element.elements %}
+        {%- if field.__class__.__name__ == "MapField" %}
+        self._proto_message.{{ field.name }}.clear()
+        for key, value in self.{{ field.name }}.items():
+            value.populate_proto()
+            tmp = self._proto_message.{{ field.name }}.setdefault(key)
+            tmp.CopyFrom(value._proto_message)
+        {%- elif field.cardinality == "REPEATED" %}
+        del self._proto_message.{{ field.name }}[:]
+        for value in self.{{ field.name }}:
+            value.populate_proto()
+            tmp = self._proto_message.{{ field.name }}.add()
+            tmp.CopyFrom(value._proto_message)
+        {%- elif field.type in package_definitions[package.name] %}
+        if self.{{ field.name }}:
+            self._proto_message.{{ field.name }}.CopyFrom(self.{{ field.name }}._proto_message)
+        {%- else %}
+        self._proto_message.{{ field.name }} = self.{{ field.name }}
+        {%- endif %}
+        {%- endfor %}
+
+    def serializeAsProtobufString(self) -> bytes:
+        self.populate_proto()
+        return self._proto_message.SerializeToString()
+
+    @classmethod
+    def deserializeFromProtobufString(cls, data: bytes) -> "{{ element.name }}":
+        message = {{ filename }}_pb2.{{ element.name }}()
+        message.ParseFromString(data)
+        return cls(
+            {%- for field in element.elements %}
+            {%- if field.__class__.__name__ == "MapField" %}
+            {{ field.name }}={key: value for key, value in message.{{ field.name }}.items()},
+            {%- elif field.cardinality == "REPEATED" %}
+            {{ field.name }}=[{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(value) for value in message.{{ field.name }}],
+            {%- else %}
+            {{ field.name }}=message.{{ field.name }},
+            {%- endif %}
+            {%- endfor %}
+        )
+
+    def serializeAsJsonString(self) -> str:
+        self.populate_proto()
+        return MessageToJson(self._proto_message)
+
+    @classmethod
+    def deserializeFromJsonString(cls, data: str) -> "{{ element.name }}":
+        message = {{ filename }}_pb2.{{ element.name }}()
+        Parse(data, message)
+        return cls.deserializeFromProtobufString(message.SerializeToString())
+
+    def __str__(self):
+        return self.serializeAsJsonString()
+{% endif -%}
+{% endfor -%}
