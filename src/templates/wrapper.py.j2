@@ -54,6 +54,7 @@ class {{ element.name }}:
             tmp.CopyFrom(value._proto_message)
         {%- elif field.type in package_definitions[package.name] %}
         if self.{{ field.name }}:
+            self.{{ field.name }}.populate_proto()
             self._proto_message.{{ field.name }}.CopyFrom(self.{{ field.name }}._proto_message)
         {%- else %}
         self._proto_message.{{ field.name }} = self.{{ field.name }}
@@ -71,11 +72,21 @@ class {{ element.name }}:
         return cls(
             {%- for field in element.elements %}
             {%- if field.__class__.__name__ == "MapField" %}
-            {{ field.name }}={key: value for key, value in message.{{ field.name }}.items()},
+            {{ field.name }} = {key: value for key, value in message.{{ field.name }}.items()},
             {%- elif field.cardinality == "REPEATED" %}
-            {{ field.name }}=[{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(value) for value in message.{{ field.name }}],
+            {%- if field.type in package_definitions[package.name] %}
+            {{ field.name }} = [{{ field.type }}.from_proto(value) for value in message.{{ field.name }}],
             {%- else %}
-            {{ field.name }}=message.{{ field.name }},
+            {{ field.name }} = [{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(value) for value in message.{{ field.name }}],
+            {%- endif %}
+            {%- elif field.type in package_definitions[package.name] %}
+            {{ field.name }} = (
+                {{ field.type }}.from_proto(message.{{ field.name }})
+                if message.HasField("{{ field.name }}")
+                else None
+            ),
+            {%- else %}
+            {{ field.name }} = message.{{ field.name }},
             {%- endif %}
             {%- endfor %}
         )
@@ -89,6 +100,14 @@ class {{ element.name }}:
         message = {{ filename }}_pb2.{{ element.name }}()
         Parse(data, message)
         return cls.deserializeFromProtobufString(message.SerializeToString())
+
+    @classmethod
+    def from_proto(cls, proto_message) -> "{{ element.name }}":
+        return cls(
+            {%- for field in element.elements %}
+            {{ field.name }} = proto_message.{{ field.name }},
+            {%- endfor %}
+        )
 
     def __str__(self):
         return self.serializeAsJsonString()
