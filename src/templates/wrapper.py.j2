@@ -105,7 +105,11 @@ class {{ element.name }}:
     def from_proto(cls, proto_message) -> "{{ element.name }}":
         return cls(
             {%- for field in element.elements %}
+            {%- if field.type in package_definitions[package.name] %}
+            {{ field.name }} = {{ field.type }}.from_proto(proto_message.{{ field.name }}),
+            {%- else %}
             {{ field.name }} = proto_message.{{ field.name }},
+            {%- endif %}
             {%- endfor %}
         )
 
