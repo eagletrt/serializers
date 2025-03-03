@@ -5,11 +5,11 @@ from typing import List, Dict
 from {{ utils.to_lower_case(package.name) }} import {{ filename }}_pb2
 from google.protobuf.json_format import MessageToJson, Parse
 
-{% for element in file_elements%}
+{% for element in file_elements %}
 {%- if element.__class__.__name__ == "Enum" -%}
 class {{ element.name }}(Enum):
     {%- for field in element.elements +%}
-    {{field.name}} = {{field.number}}
+    {{ field.name }} = {{ field.number }}
     {%- endfor %}
 {% endif %}
 {% if element.__class__.__name__ == "Message" -%}
@@ -27,6 +27,8 @@ class {{ element.name }}:
     {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
     {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0.0
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
+    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = False
     {%- else %}
     {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = ""
     {%- endif %}
@@ -38,31 +40,75 @@ class {{ element.name }}:
     def __post_init__(self):
         self._proto_message = {{ filename }}_pb2.{{ element.name }}()
 
-    def populate_proto(self):
+    def _populate_proto(self):
         {%- for field in element.elements %}
         {%- if field.__class__.__name__ == "MapField" %}
         self._proto_message.{{ field.name }}.clear()
-        for key, value in self.{{ field.name }}.items():
-            value.populate_proto()
+        for key, val in self.{{ field.name }}.items():
+        {%- if field.value_type in package_definitions[package.name] %}
+            val._populate_proto()
             tmp = self._proto_message.{{ field.name }}.setdefault(key)
-            tmp.CopyFrom(value._proto_message)
+            tmp.CopyFrom(val._proto_message)
+        {%- else %}
+            self._proto_message.{{ field.name }}[key] = val
+        {%- endif %}
         {%- elif field.cardinality == "REPEATED" %}
         del self._proto_message.{{ field.name }}[:]
-        for value in self.{{ field.name }}:
-            value.populate_proto()
+        {%- if field.type in package_definitions[package.name] %}
+        for val in self.{{ field.name }}:
+            val._populate_proto()
             tmp = self._proto_message.{{ field.name }}.add()
-            tmp.CopyFrom(value._proto_message)
+            tmp.CopyFrom(val._proto_message)
+        {%- else %}
+        for val in self.{{ field.name }}:
+            self._proto_message.{{ field.name }}.append(val)
+        {%- endif %}
         {%- elif field.type in package_definitions[package.name] %}
+        {%- for elem in file_elements %}
+        {%- if elem.__class__.__name__ == "Enum" and elem.name == field.type %}
+        self._proto_message.{{ field.name }} = self.{{ field.name }}.value
+        {%- elif elem.name == field.type %}
         if self.{{ field.name }}:
-            self.{{ field.name }}.populate_proto()
+            self.{{ field.name }}._populate_proto()
             self._proto_message.{{ field.name }}.CopyFrom(self.{{ field.name }}._proto_message)
+        {%- endif %}
+        {%- endfor %}
         {%- else %}
         self._proto_message.{{ field.name }} = self.{{ field.name }}
         {%- endif %}
         {%- endfor %}
 
+    @classmethod
+    def _from_proto(cls, proto_message) -> "{{ element.name }}":
+        return cls(
+            {%- for field in element.elements %}
+            {%- if field.__class__.__name__ == "MapField" %}
+            {%- if field.value_type in package_definitions[package.name] %}
+            {{ field.name }}={key: {{ field.value_type }}._from_proto(val) for key, val in proto_message.{{ field.name }}.items()},
+            {%- else %}
+            {{ field.name }}={key: {{ utils.typeof_py(field.value_type, package_definitions[package.name]) }}(val) for key, val in proto_message.{{ field.name }}.items()},
+            {%- endif %}
+            {%- elif field.cardinality == "REPEATED" %}
+            {%- if field.type in package_definitions[package.name] %}
+            {{ field.name }}=[{{ field.type }}._from_proto(val) for val in proto_message.{{ field.name }}],
+            {%- else %}
+            {{ field.name }}=[{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(val) for val in proto_message.{{ field.name }}],
+            {%- endif %}
+            {%- else %}
+            {%- if field.type in package_definitions[package.name] %}
+            {{ field.name }} = {{ field.type }}._from_proto(proto_message.{{ field.name }}),
+            {%- else %}
+            {{ field.name }} = proto_message.{{ field.name }},
+            {%- endif %}
+            {%- endif %}
+            {%- endfor %}
+        )
+
+    def __str__(self):
+        return self.serializeAsJsonString()
+
     def serializeAsProtobufString(self) -> bytes:
-        self.populate_proto()
+        self._populate_proto()
         return self._proto_message.SerializeToString()
 
     @classmethod
@@ -72,19 +118,29 @@ class {{ element.name }}:
         return cls(
             {%- for field in element.elements %}
             {%- if field.__class__.__name__ == "MapField" %}
-            {{ field.name }} = {key: value for key, value in message.{{ field.name }}.items()},
+            {%- if field.value_type in package_definitions[package.name] %}
+            {{ field.name }} = {key: {{ field.value_type }}._from_proto(val) for key, val in message.{{ field.name }}.items()},
+            {%- else %}
+            {{ field.name }} = {key: {{ utils.typeof_py(field.value_type, package_definitions[package.name]) }}(val) for key, val in message.{{ field.name }}.items()},
+            {%- endif %}
             {%- elif field.cardinality == "REPEATED" %}
             {%- if field.type in package_definitions[package.name] %}
-            {{ field.name }} = [{{ field.type }}.from_proto(value) for value in message.{{ field.name }}],
+            {{ field.name }} = [{{ field.type }}._from_proto(val) for val in message.{{ field.name }}],
             {%- else %}
-            {{ field.name }} = [{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(value) for value in message.{{ field.name }}],
+            {{ field.name }} = [{{ utils.typeof_py(field.type, package_definitions[package.name]) }}(val) for val in message.{{ field.name }}],
             {%- endif %}
             {%- elif field.type in package_definitions[package.name] %}
+            {%- for elem in file_elements %}
+            {%- if elem.__class__.__name__ == "Enum" and elem.name == field.type %}
+            {{ field.name }} = {{ field.type }}(message.{{ field.name }}),
+            {%- elif elem.name == field.type %}
             {{ field.name }} = (
-                {{ field.type }}.from_proto(message.{{ field.name }})
+                {{ field.type }}._from_proto(message.{{ field.name }})
                 if message.HasField("{{ field.name }}")
                 else None
             ),
+            {%- endif %}
+            {%- endfor %}
             {%- else %}
             {{ field.name }} = message.{{ field.name }},
             {%- endif %}
@@ -92,7 +148,7 @@ class {{ element.name }}:
         )
 
     def serializeAsJsonString(self) -> str:
-        self.populate_proto()
+        self._populate_proto()
         return MessageToJson(self._proto_message)
 
     @classmethod
@@ -100,20 +156,5 @@ class {{ element.name }}:
         message = {{ filename }}_pb2.{{ element.name }}()
         Parse(data, message)
         return cls.deserializeFromProtobufString(message.SerializeToString())
-
-    @classmethod
-    def from_proto(cls, proto_message) -> "{{ element.name }}":
-        return cls(
-            {%- for field in element.elements %}
-            {%- if field.type in package_definitions[package.name] %}
-            {{ field.name }} = {{ field.type }}.from_proto(proto_message.{{ field.name }}),
-            {%- else %}
-            {{ field.name }} = proto_message.{{ field.name }},
-            {%- endif %}
-            {%- endfor %}
-        )
-
-    def __str__(self):
-        return self.serializeAsJsonString()
 {% endif -%}
 {% endfor -%}
