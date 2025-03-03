@@ -1,8 +1,9 @@
 import argparse
 import os
 import re
-import utils
+
 import jinja2
+import utils
 
 parser = argparse.ArgumentParser(description='Generate cpp code from proto schemas')
 
@@ -27,6 +28,12 @@ with open("src/templates/CMakeLists.txt.j2", "r") as file:
 with open("src/templates/wrapper.py.j2", "r") as file:
     py_template = jinja2.Template(file.read())
 
+with open("src/templates/test.py.j2", "r") as file:
+    test_py_template = jinja2.Template(file.read())
+
+with open("src/templates/conftest.py.j2", "r") as file:
+    conftest_template = jinja2.Template(file.read())
+
 if __name__ == "__main__":
     args = parser.parse_args()
 
@@ -39,6 +46,8 @@ if __name__ == "__main__":
     filenames = []
     filepaths = []
 
+    test_dir = "tests"
+
     for (filename, filepath, package, schema) in files:
         filenames.append(filename)
         filepaths.append(filepath)
@@ -48,6 +57,14 @@ if __name__ == "__main__":
         with open(os.path.join(args.output_dir, "py", filepath, f"{filename}.py"), "w") as file:
             file.write(py_template.render(file_elements=schema.file_elements, filename=filename, package=package, package_definitions=package_definitions, utils=utils))
             print(f"✅ Generated python file {os.path.join(args.output_dir, 'py', f'{filename}.py')}", end="\n\n")
+
+        print(f"Generating python tests for {filename}.proto...")
+        os.makedirs(os.path.join(test_dir, filepath), exist_ok=True)
+        with open(os.path.join(test_dir, filepath, f"test_{filename}.py"), "w") as file:
+            file.write(test_py_template.render(file_elements=schema.file_elements, filename=filename, package=package, package_definitions=package_definitions, utils=utils))
+            print(f"✅ Generated python test file {os.path.join('tests', f'test_{filename}.py')}", end="\n\n")
+        with open(os.path.join(test_dir, filepath, f"__init__.py"), "w") as file:
+            pass
         
         print(f'Generating files for {filename}.proto...')
         os.makedirs(os.path.join(args.output_dir, "inc", filepath), exist_ok=True)
@@ -64,9 +81,9 @@ if __name__ == "__main__":
     with open(os.path.join(args.output_dir, "serializers.h"), "w") as file:
         file.write(serializers_template.render(filenames=filenames, filepaths=filepaths))
         print(f"✅ Generated header file {os.path.join(args.output_dir, 'serializers.h')}", end="\n\n")
-    with open(os.path.join(args.output_dir, "serializers_py.py"), "w") as file:
+    with open(os.path.join(args.output_dir, "serializers.py"), "w") as file:
         file.write(serializers_py_template.render(output_dir= args.output_dir, filenames=filenames, filepaths=filepaths))
-        print(f"✅ Generated python file {os.path.join(args.output_dir, 'serializers_py.py')}", end="\n\n")
+        print(f"✅ Generated python file {os.path.join(args.output_dir, 'serializers.py')}", end="\n\n")
 
     print(f"Generating file for CMake...")
     with open(os.path.join(args.output_dir, "CMakeLists.txt"), "w") as file:
@@ -82,3 +99,9 @@ if __name__ == "__main__":
                 destination.write(result)
 
     print("✅ Copied .proto files")
+
+    # Generate conftest.py
+    with open("tests/conftest.py", "w") as file:
+        file.write(conftest_template.render())
+    with open("tests/__init__.py", "w") as file:
+        pass

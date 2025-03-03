@@ -10,5 +10,9 @@ bin/
 out/
 
 __pycache__/
+.pytest_cache/
 
 .DS_Store
+
+tests/
+serializers/

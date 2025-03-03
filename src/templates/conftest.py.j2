@@ -1,0 +1,14 @@
+import os
+import sys
+
+if not os.path.exists(".generated/serializers/proto"):
+    os.system("sh scripts/compile_proto.sh")
+
+test_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(test_dir)
+generated_dir = os.path.join(
+    project_root, ".generated", "serializers", "proto"
+)
+if generated_dir not in sys.path:
+    sys.path.insert(0, generated_dir)
+

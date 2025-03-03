@@ -1,0 +1,104 @@
+import pytest
+
+{% for element in file_elements -%}
+from serializers.py.{{ utils.to_lower_case(package.name) }}.{{ filename }} import {{ element.name }}
+{% endfor -%}
+
+{% for element in file_elements %}
+@pytest.fixture
+def {{ utils.to_lower_case(element.name) }}(
+    {%- set args = {} -%}
+    {%- for field in element.elements %}
+        {%- if field.__class__.__name__ == "MapField" %}
+            {%- if field.value_type in package_definitions[package.name] %}
+                {%- set _ = args.update({utils.to_lower_case(field.value_type): True}) %}
+            {%- endif %}
+        {%- else %}
+        {%- if field.type in package_definitions[package.name] %}
+            {%- set _ = args.update({utils.to_lower_case(field.type): True}) %}
+        {%- endif %}
+        {%- endif %}
+    {%- endfor %}
+    {{ args.keys() | join(", ") }}
+):
+    {%- if not element.__class__.__name__ == "Enum" %}
+    {{ utils.to_lower_case(element.name) }} = {{ element.name }}()
+
+    {%- for field in element.elements %}
+    {%- if field.__class__.__name__ == "MapField" %}
+    {%- set key_type = utils.typeof_py(field.key_type, package_definitions[package.name]) %}
+    {%- set value_type = utils.typeof_py(field.value_type, package_definitions[package.name]) %}
+
+    {%- if key_type and value_type %}
+    {%- if value_type == "bool" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): True for i in range(10) }
+    {%- elif value_type == "int" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): 2 for i in range(10) }
+    {%- elif value_type == "float" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): 1.1 for i in range(10) }
+    {%- elif value_type == "str" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): "vabon" for i in range(10) }
+    {%- elif value_type in package_definitions[package.name] %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.to_lower_case(value_type) }} for i in range(10) }
+    {%- else %}
+    Not supported value type {{ field.value_type }}
+    {%- endif %}
+    {%- else %}
+    Not supported key/value types ({{ field.key_type }}, {{ field.value_type }})
+    {%- endif %}
+
+    {%- elif field.cardinality == "REPEATED" %}
+    {%- if field.type in package_definitions[package.name] %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.to_lower_case(field.type) }} for _ in range(10)]
+    {%- else %}
+    {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [True for _ in range(10)]
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [2 for _ in range(10)]
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [1.1 for _ in range(10)]
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = ["vabon" for _ in range(10)]
+    {%- else %}
+    Not supported type {{ field.type }}
+    {%- endif %}
+    {%- endif %}
+
+    {%- elif field.type in package_definitions[package.name] %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.to_lower_case(field.type) }}
+    {%- else %}
+    {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = True
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = 2
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = 1.1
+    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = "vabon"
+    {%- else %}
+    Not supported type {{ field.type }}
+    {%- endif %}
+
+    {%- endif %}
+    {%- endfor %}
+    {%- else %}
+    {{ utils.to_lower_case(element.name) }} = {{ element.name }}(0)
+    {%- endif %}
+
+    return {{ utils.to_lower_case(element.name) }}
+{% endfor -%}
+
+{% for element in file_elements %}
+{%- if not element.__class__.__name__ == "Enum" %}
+def test_{{ utils.to_lower_case(element.name) }}({{ utils.to_lower_case(element.name) }}):
+    {{ utils.to_lower_case(element.name) }}2 = {{ element.name }}.deserializeFromProtobufString({{ utils.to_lower_case(element.name) }}.serializeAsProtobufString())
+    {{ utils.to_lower_case(element.name) }}2._populate_proto()
+
+    assert {{ utils.to_lower_case(element.name) }} == {{ utils.to_lower_case(element.name) }}2
+
+    {{ utils.to_lower_case(element.name) }}2 = {{ element.name }}.deserializeFromJsonString({{ utils.to_lower_case(element.name) }}.serializeAsJsonString())
+    {{ utils.to_lower_case(element.name) }}2._populate_proto()
+
+    assert {{ utils.to_lower_case(element.name) }} == {{ utils.to_lower_case(element.name) }}2
+{%- endif %}
+{% endfor -%}
