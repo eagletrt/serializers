@@ -19,8 +19,8 @@ with open("src/templates/wrapper.cpp.j2", "r") as file:
 with open("src/templates/serializers.h.j2", "r") as file:
     serializers_template = jinja2.Template(file.read())
 
-with open("src/templates/serializers.py.j2", "r") as file:
-    serializers_py_template = jinja2.Template(file.read())
+with open("src/templates/__init__.py.j2", "r") as file:
+    init_template = jinja2.Template(file.read())
 
 with open("src/templates/CMakeLists.txt.j2", "r") as file:
     cmake_template = jinja2.Template(file.read())
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     with open(os.path.join(args.output_dir, "serializers.h"), "w") as file:
         file.write(serializers_template.render(filenames=filenames, filepaths=filepaths))
         print(f"✅ Generated header file {os.path.join(args.output_dir, 'serializers.h')}", end="\n\n")
-    with open(os.path.join(args.output_dir, "serializers.py"), "w") as file:
-        file.write(serializers_py_template.render(output_dir= args.output_dir, filenames=filenames, filepaths=filepaths))
-        print(f"✅ Generated python file {os.path.join(args.output_dir, 'serializers.py')}", end="\n\n")
+    with open(os.path.join(args.output_dir, "py", "__init__.py"), "w") as file:
+        file.write(init_template.render(output_dir= args.output_dir, filenames=filenames, filepaths=filepaths))
+        print(f"✅ Generated python file {os.path.join(args.output_dir, '__init__.py')}", end="\n\n")
 
     print(f"Generating file for CMake...")
     with open(os.path.join(args.output_dir, "CMakeLists.txt"), "w") as file:
