@@ -15,6 +15,12 @@ class {{ element.name }}(Enum):
 {% if element.__class__.__name__ == "Message" -%}
 @dataclass
 class {{ element.name }}:
+    {%- set default_values = {
+        "int": "0",
+        "float": "0.0",
+        "bool": "False",
+        "str": "\"\""
+    } -%}
     {%- for field in element.elements %}
     {%- if field.__class__.__name__ == "MapField" %}
     {{ field.name }}: Dict[{{ utils.typeof_py(field.key_type, package_definitions[package.name]) }}, {{ utils.typeof_py(field.value_type, package_definitions[package.name]) }}] = field(default_factory=dict)
@@ -23,15 +29,8 @@ class {{ element.name }}:
     {%- elif field.type in package_definitions[package.name] %}
     {{ field.name }}: {{ field.type }} = None
     {%- else %}
-    {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
-    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0
-    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
-    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = 0.0
-    {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
-    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = False
-    {%- else %}
-    {{ field.name }}: {{ utils.typeof_py(field.type, package_definitions[package.name]) }} = ""
-    {%- endif %}
+    {%- set py_type = utils.typeof_py(field.type, package_definitions[package.name]) %}
+    {{ field.name }}: {{ py_type }} = {{ default_values.get(py_type, "\"\"") }}
     {%- endif %}
     {%- endfor %}
     
