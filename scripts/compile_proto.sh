@@ -16,7 +16,7 @@ mkdir -p .generated
 
 echo "[proto] reading proto sources list"
 while IFS= read -r line; do
-  protoc --python_out=.generated $line
+  protoc --experimental_allow_proto3_optional --python_out=.generated $line
   printf "\33[2K\r" # clear line
   printf "[proto] gen $line"
 done < $DIR_PATH/.proto_sources.txt
