@@ -31,15 +31,15 @@ def {{ utils.to_lower_case(element.name) }}(
 
     {%- if key_type and value_type %}
     {%- if value_type == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): True for i in range(10) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_bool() }} for i in range({{ utils.get_loop_iterations() }}) }
     {%- elif value_type == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): 2 for i in range(10) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_int() }} for i in range({{ utils.get_loop_iterations() }}) }
     {%- elif value_type == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): 1.1 for i in range(10) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_float() }} for i in range({{ utils.get_loop_iterations() }}) }
     {%- elif value_type == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): "vabon" for i in range(10) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): "{{ utils.get_str() }}" for i in range({{ utils.get_loop_iterations() }}) }
     {%- elif value_type in package_definitions[package.name] %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.to_lower_case(value_type) }} for i in range(10) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.to_lower_case(value_type) }} for i in range({{ utils.get_loop_iterations() }}) }
     {%- else %}
     Not supported value type {{ field.value_type }}
     {%- endif %}
@@ -49,16 +49,16 @@ def {{ utils.to_lower_case(element.name) }}(
 
     {%- elif field.cardinality == "REPEATED" %}
     {%- if field.type in package_definitions[package.name] %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.to_lower_case(field.type) }} for _ in range(10)]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.to_lower_case(field.type) }} for _ in range({{ utils.get_loop_iterations() }})]
     {%- else %}
     {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [True for _ in range(10)]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_bool() }} for _ in range({{ utils.get_loop_iterations() }})]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [2 for _ in range(10)]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_int() }} for _ in range({{ utils.get_loop_iterations() }})]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [1.1 for _ in range(10)]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_float() }} for _ in range({{ utils.get_loop_iterations() }})]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = ["vabon" for _ in range(10)]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = ["{{ utils.get_str() }}" for _ in range({{ utils.get_loop_iterations() }})]
     {%- else %}
     Not supported type {{ field.type }}
     {%- endif %}
@@ -68,13 +68,13 @@ def {{ utils.to_lower_case(element.name) }}(
     {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.to_lower_case(field.type) }}
     {%- else %}
     {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = True
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_bool() }}
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = 2
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_int() }}
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = 1.1
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_float() }}
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = "vabon"
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = "{{ utils.get_str() }}"
     {%- else %}
     Not supported type {{ field.type }}
     {%- endif %}
