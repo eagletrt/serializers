@@ -40,26 +40,6 @@ TYPES_MAP_PY = {
     "string": "str",
 }
 
-bool_list = [True, False]
-int_list = [1, 2, 3, 4, 5]
-float_list = [1.1, 2.2, 3.3, 4.4, 5.5]
-str_list = ["vabon", "vabon2", "vabon3", "vabon4", "vabon5"]
-
-
-def get_bool():
-    return bool_list[0]
-
-def get_int():
-    return int_list[0]
-
-def get_float():
-    return float_list[0]
-
-def get_str():
-    return str_list[0]
-
-def get_loop_iterations():
-    return 10
 
 def typeof(field_type: str, elements_names: list) -> str:
     if field_type in elements_names:

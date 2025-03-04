@@ -1,5 +1,6 @@
 import pytest
 
+from tests.conftest import get_bool, get_int, get_float, get_str, get_loop_iterations
 {% for element in file_elements -%}
 from serializers.py.{{ utils.to_lower_case(package.name) }}.{{ filename }} import {{ element.name }}
 {% endfor -%}
@@ -31,15 +32,15 @@ def {{ utils.to_lower_case(element.name) }}(
 
     {%- if key_type and value_type %}
     {%- if value_type == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_bool() }} for i in range({{ utils.get_loop_iterations() }}) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): get_bool() for i in range(get_loop_iterations()) }
     {%- elif value_type == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_int() }} for i in range({{ utils.get_loop_iterations() }}) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): get_int() for i in range(get_loop_iterations()) }
     {%- elif value_type == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.get_float() }} for i in range({{ utils.get_loop_iterations() }}) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): get_float() for i in range(get_loop_iterations()) }
     {%- elif value_type == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): "{{ utils.get_str() }}" for i in range({{ utils.get_loop_iterations() }}) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): get_str() for i in range(get_loop_iterations()) }
     {%- elif value_type in package_definitions[package.name] %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.to_lower_case(value_type) }} for i in range({{ utils.get_loop_iterations() }}) }
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = { {{ key_type }}(i): {{ utils.to_lower_case(value_type) }} for i in range(get_loop_iterations()) }
     {%- else %}
     Not supported value type {{ field.value_type }}
     {%- endif %}
@@ -49,16 +50,16 @@ def {{ utils.to_lower_case(element.name) }}(
 
     {%- elif field.cardinality == "REPEATED" %}
     {%- if field.type in package_definitions[package.name] %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.to_lower_case(field.type) }} for _ in range({{ utils.get_loop_iterations() }})]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.to_lower_case(field.type) }} for _ in range(get_loop_iterations())]
     {%- else %}
     {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_bool() }} for _ in range({{ utils.get_loop_iterations() }})]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [get_bool() for _ in range(get_loop_iterations())]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_int() }} for _ in range({{ utils.get_loop_iterations() }})]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [get_int() for _ in range(get_loop_iterations())]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [{{ utils.get_float() }} for _ in range({{ utils.get_loop_iterations() }})]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [get_float() for _ in range(get_loop_iterations())]
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = ["{{ utils.get_str() }}" for _ in range({{ utils.get_loop_iterations() }})]
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = [get_str() for _ in range(get_loop_iterations())]
     {%- else %}
     Not supported type {{ field.type }}
     {%- endif %}
@@ -68,13 +69,13 @@ def {{ utils.to_lower_case(element.name) }}(
     {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.to_lower_case(field.type) }}
     {%- else %}
     {%- if utils.typeof_py(field.type, package_definitions[package.name]) == "bool" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_bool() }}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = get_bool()
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "int" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_int() }}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = get_int()
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "float" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = {{ utils.get_float() }}
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = get_float()
     {%- elif utils.typeof_py(field.type, package_definitions[package.name]) == "str" %}
-    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = "{{ utils.get_str() }}"
+    {{ utils.to_lower_case(element.name) }}.{{ field.name }} = get_str()
     {%- else %}
     Not supported type {{ field.type }}
     {%- endif %}
@@ -87,6 +88,12 @@ def {{ utils.to_lower_case(element.name) }}(
 
     return {{ utils.to_lower_case(element.name) }}
 {% endfor -%}
+
+def test_primitive_getters():
+    assert get_bool() != False
+    assert get_int() != 0
+    assert get_float() != 0.0
+    assert get_str() != ""
 
 {% for element in file_elements %}
 {%- if not element.__class__.__name__ == "Enum" %}

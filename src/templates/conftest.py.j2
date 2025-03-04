@@ -12,3 +12,24 @@ generated_dir = os.path.join(
 if generated_dir not in sys.path:
     sys.path.insert(0, generated_dir)
 
+bool_list = [True, False]
+int_list = [1, 2, 3, 4, 5]
+float_list = [1.1, 2.2, 3.3, 4.4, 5.5]
+str_list = ["vabon", "vabon2", "vabon3", "vabon4", "vabon5"]
+loop_iterations_list = [5, 10]
+
+
+def get_bool():
+    return bool_list[0]
+
+def get_int():
+    return int_list[0]
+
+def get_float():
+    return float_list[0]
+
+def get_str():
+    return str_list[0]
+
+def get_loop_iterations():
+    return loop_iterations_list[1]
