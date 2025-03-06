@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print(f"Generating python tests for {filename}.proto...")
         os.makedirs(os.path.join(test_dir, filepath), exist_ok=True)
         with open(os.path.join(test_dir, filepath, f"test_{filename}.py"), "w") as file:
-            file.write(test_py_template.render(file_elements=schema.file_elements, filename=filename, package=package, package_definitions=package_definitions, utils=utils))
+            file.write(test_py_template.render(file_elements=schema.file_elements, output_dir=args.output_dir, filename=filename, package=package, package_definitions=package_definitions, utils=utils))
             print(f"✅ Generated python test file {os.path.join('tests', f'test_{filename}.py')}", end="\n\n")
         with open(os.path.join(test_dir, filepath, f"__init__.py"), "w") as file:
             pass
@@ -107,3 +107,11 @@ if __name__ == "__main__":
         file.write(conftest_template.render())
     with open("tests/__init__.py", "w") as file:
         pass
+
+    # write .proto_sources.txt with all .proto in output_dir
+    if os.path.exists(os.path.join("scripts", ".proto_sources.txt")):
+        os.remove(os.path.join("scripts", ".proto_sources.txt"))
+    with open(os.path.join("scripts", ".proto_sources.txt"), "w") as file:
+        for i, filepath in enumerate(filepaths):
+            file.write(f"{os.path.join(args.output_dir, 'proto', filepath, f'{filenames[i]}.proto')}\n")
+        print(f"✅ Generated {os.path.join(args.output_dir, '.proto_sources.txt')}", end="\n\n")
