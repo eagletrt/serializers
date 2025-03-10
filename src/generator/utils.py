@@ -134,3 +134,7 @@ def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, 
             package_definitions[package.name].append(element.name)
 
     return (files, package_definitions)
+
+
+def path_to_import(path: str) -> str:
+    return path.replace("/", ".").replace("\\", ".")

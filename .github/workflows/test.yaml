@@ -35,7 +35,9 @@ jobs:
                   sudo apt install -y protobuf-compiler
 
             - name: Install dependencies
-              run: pip install -r requirements.txt
+              run: |
+                pip install protobuf==3.20.0
+                pip install -r requirements.txt
 
             - name: Generate code
               run: python3 src/generator/main.py telemetry-serializers/proto/ serializers

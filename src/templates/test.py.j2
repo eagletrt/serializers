@@ -2,7 +2,7 @@ import pytest
 
 from tests.conftest import get_bool, get_int, get_float, get_str, get_loop_iterations
 {% for element in file_elements -%}
-from {{ output_dir }}.py.{{ utils.to_lower_case(package.name) }}.{{ filename }} import {{ element.name }}
+from {{ utils.path_to_import(output_dir) }}.py.{{ utils.to_lower_case(package.name) }}.{{ filename }} import {{ element.name }}
 {% endfor -%}
 
 {% for element in file_elements %}
