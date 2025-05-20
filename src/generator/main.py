@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
     # Generate conftest.py
     with open("tests/conftest.py", "w") as file:
-        file.write(conftest_template.render())
+        file.write(conftest_template.render(output_dir= args.output_dir))
     with open("tests/__init__.py", "w") as file:
         pass
 
