@@ -95,7 +95,13 @@ class {{ element.name }}:
             {%- endif %}
             {%- else %}
             {%- if field.type in package_definitions[package.name] %}
+            {%- for elem in file_elements %}
+            {%- if elem.__class__.__name__ == "Enum" and elem.name == field.type %}
+            {{ field.name }} = {{ field.type }}(proto_message.{{ field.name }}),
+            {%- elif elem.name == field.type %}
             {{ field.name }} = {{ field.type }}._from_proto(proto_message.{{ field.name }}),
+            {%- endif %}
+            {%- endfor %}
             {%- else %}
             {{ field.name }} = proto_message.{{ field.name }},
             {%- endif %}

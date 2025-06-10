@@ -137,4 +137,6 @@ def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, 
 
 
 def path_to_import(path: str) -> str:
+    if (path.endswith("/") or path.endswith("\\")):
+        path = path[:-1]
     return path.replace("/", ".").replace("\\", ".")
