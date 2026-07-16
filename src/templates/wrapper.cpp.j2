@@ -10,8 +10,26 @@ namespace {{ package.name }}
 {% for element in file_elements -%}
 {% if element.__class__.__name__ == "Message" -%}
 {{ element.name }}::{{ element.name }}(const Pb{{ package.name }}::{{ element.name }}& protobuf) {
-    {%- for field in element.elements -%}
-    {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
+    {%- for field, oneof_name, is_oneof_first in utils.iter_message_fields(element.elements) -%}
+    {%- if oneof_name and utils.is_message(field.type, file_elements) -%}
+    if(protobuf.has_{{ field.name.lower() }}()) {
+        {{ field.name }} = protobuf.{{ field.name.lower() }}();
+    } else {
+        {{ field.name }} = std::nullopt;
+    }
+    {%- elif oneof_name and utils.is_enum(field.type, file_elements) -%}
+    if(protobuf.has_{{ field.name.lower() }}()) {
+        {{ field.name }} = static_cast<{{ field.type }}>(protobuf.{{ field.name.lower() }}());
+    } else {
+        {{ field.name }} = std::nullopt;
+    }
+    {%- elif oneof_name -%}
+    if(protobuf.has_{{ field.name.lower() }}()) {
+        {{ field.name }} = protobuf.{{ field.name.lower() }}();
+    } else {
+        {{ field.name }} = std::nullopt;
+    }
+    {%- elif field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
     {# Map of enum #}
     for(const auto& p : protobuf.{{ field.name.lower() }}()) {
         {{ field.name }}.emplace(p.first, static_cast<{{ field.value_type }}>(p.second));
@@ -21,8 +39,7 @@ namespace {{ package.name }}
     for(const auto& e : protobuf.{{ field.name.lower() }}()) {
         {{ field.name }}.push_back(static_cast<{{field.type}}>(e));
     }
-    {%- elif field.__class__.__name__ == "MapField" or (field.cardinality == "REPEATED")
-    -%}
+    {%- elif field.__class__.__name__ == "MapField" or (field.cardinality == "REPEATED") -%}
     {# Map OR vector #}
     {{ field.name }} = {protobuf.{{ field.name.lower() }}().begin(), protobuf.{{ field.name.lower() }}().end()};
     {%- elif utils.is_enum(field.type, file_elements) -%}
@@ -37,8 +54,23 @@ namespace {{ package.name }}
 
 {{ element.name }}::operator Pb{{ package.name }}::{{ element.name }}() const {
     Pb{{ package.name }}::{{ element.name }} ret;
-    {%- for field in element.elements -%}
-    {%- if field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
+    {%- for field, oneof_name, is_oneof_first in utils.iter_message_fields(element.elements) -%}
+    {%- if oneof_name and utils.is_message(field.type, file_elements) -%}
+    {# Optional message field in oneof #}
+    if({{ field.name }}.has_value()) {
+        *(ret.mutable_{{ field.name.lower() }}()) = *{{ field.name }};
+    }
+    {%- elif oneof_name and utils.is_enum(field.type, file_elements) -%}
+    {# Optional enum field in oneof #}
+    if({{ field.name }}.has_value()) {
+        ret.set_{{ field.name.lower() }}(static_cast<Pb{{ package.name }}::{{ field.type }}>({{ field.name }}.value()));
+    }
+    {%- elif oneof_name -%}
+    {# Optional primitive field in oneof #}
+    if({{ field.name }}.has_value()) {
+        ret.set_{{ field.name.lower() }}({{ field.name }}.value());
+    }
+    {%- elif field.__class__.__name__ == "MapField" and utils.is_enum(field.value_type, file_elements) -%}
     {# Map of enum #}
     for(const auto& p : {{ field.name }}) {
         ret.mutable_{{ field.name.lower() }}()->operator[](p.first) = static_cast<{{ package.name }}::{{ field.value_type }}>(p.second);
@@ -48,8 +80,7 @@ namespace {{ package.name }}
     for(const auto& e : {{ field.name }}) {
         ret.mutable_{{ field.name.lower() }}()->Add(static_cast<{{ package.name }}::{{ field.type }}>(e));
     }
-    {%- elif (field.__class__.__name__ == "MapField") or (field.cardinality == "REPEATED")
-    -%}
+    {%- elif (field.__class__.__name__ == "MapField") or (field.cardinality == "REPEATED") -%}
     {# Map OR vector #}
     *(ret.mutable_{{ field.name.lower() }}()) = {{ "{" }}{{ field.name }}.begin(), {{ field.name }}.end()};
     {%- elif utils.is_enum(field.type, file_elements) -%}

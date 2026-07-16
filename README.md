@@ -133,5 +133,5 @@ int main()
 - [x] Package check
 - [ ] Import external proto definitions
 - [ ] Nested types
-- [ ] OneOf
+- [x] OneOf
 - [ ] Custom options

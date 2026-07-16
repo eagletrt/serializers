@@ -9,7 +9,7 @@ from {{ utils.path_to_import(output_dir) }}.py.{{ utils.to_lower_case(package.na
 @pytest.fixture
 def {{ utils.to_lower_case(element.name) }}(
     {%- set args = {} -%}
-    {%- for field in element.elements %}
+    {%- for field, oneof_name, is_oneof_first in utils.iter_message_fields(element.elements) %}
         {%- if field.__class__.__name__ == "MapField" %}
             {%- if field.value_type in package_definitions[package.name] %}
                 {%- set _ = args.update({utils.to_lower_case(field.value_type): True}) %}
@@ -25,7 +25,8 @@ def {{ utils.to_lower_case(element.name) }}(
     {%- if not element.__class__.__name__ == "Enum" %}
     {{ utils.to_lower_case(element.name) }} = {{ element.name }}()
 
-    {%- for field in element.elements %}
+    {%- for field, oneof_name, is_oneof_first in utils.iter_message_fields(element.elements) %}
+    {%- if not oneof_name or is_oneof_first %}
     {%- if field.__class__.__name__ == "MapField" %}
     {%- set key_type = utils.typeof_py(field.key_type, package_definitions[package.name]) %}
     {%- set value_type = utils.typeof_py(field.value_type, package_definitions[package.name]) %}
@@ -79,7 +80,7 @@ def {{ utils.to_lower_case(element.name) }}(
     {%- else %}
     Not supported type {{ field.type }}
     {%- endif %}
-
+    {%- endif %}
     {%- endif %}
     {%- endfor %}
     {%- else %}

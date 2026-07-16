@@ -76,6 +76,17 @@ def is_message(field_type: str, file_elements: list) -> bool:
     filtered = list(filter(lambda e: isinstance(e, Message), file_elements))
     return field_type in list(map(lambda f: f.name, filtered))
 
+def is_oneof(field_element) -> bool:
+    return field_element.__class__.__name__ == "OneOf"
+
+def iter_message_fields(message_elements: list):
+    for element in message_elements:
+        if is_oneof(element):
+            for index, field in enumerate(element.elements):
+                yield field, element.name, index == 0
+        else:
+            yield element, None, False
+
 def dir_file_paths(dir, ext):
     files_paths = []
         
