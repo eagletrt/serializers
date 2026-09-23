@@ -36,7 +36,7 @@ struct {{ element.name }}
     {% elif oneof_name -%}
     std::optional<{{ utils.typeof(field.type, package_definitions[package.name]) }}> {{ field.name }};
     {% else -%}
-    {{ utils.typeof(field.type, package_definitions[package.name]) }} {{ field.name }};
+    {{ utils.typeof(field.type, package_definitions[package.name]) }} {{ field.name }}{};
     {% endif -%}
     {%- endfor %}
     {{ element.name }}() = default;
