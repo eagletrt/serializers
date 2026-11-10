@@ -1,0 +1,8 @@
+# Scripts and Dockerfiles run inside a Linux container: they must keep LF line
+# endings even when the repository is checked out on Windows (a CRLF shebang
+# makes the script fail with "no such file or directory").
+*.sh            text eol=lf
+Dockerfile      text eol=lf
+.dockerignore   text eol=lf
+scripts/*       text eol=lf
+*.j2            text eol=lf

@@ -6,13 +6,15 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-EXECUTABLE_PATH=~/go/bin/protoc-gen-jsonschema
+# The Docker image ships the plugin in the PATH; otherwise use the Go bin folder.
+EXECUTABLE_PATH=${PROTOC_GEN_JSONSCHEMA:-$(command -v protoc-gen-jsonschema || echo ~/go/bin/protoc-gen-jsonschema)}
+JSONSCHEMA_REF=${JSONSCHEMA_REF:-73d5723042b812758310ea5ef661a273f0faa9ed}
 PROTO_FILES=$(ls -m $1 | grep -o '[^ ]*\.proto' | tr ', ' ' ')
 
 # Check if file exists
 if [ ! -f "$EXECUTABLE_PATH" ]; then
     echo "Installing 'protoc-gen-jsonschema'..."
-    go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@latest
+    go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@$JSONSCHEMA_REF
 fi
 
 mkdir -p $2/schemas

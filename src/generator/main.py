@@ -35,7 +35,8 @@ with open("src/templates/conftest.py.j2", "r") as file:
     conftest_template = jinja2.Template(file.read())
 
 if __name__ == "__main__":
-    os.system("pre-commit install")
+    if os.path.isdir(".git"):
+        os.system("pre-commit install")
 
     args = parser.parse_args()
 
