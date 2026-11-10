@@ -175,7 +175,7 @@ FROM ghcr.io/eagletrt/serializers:${SERIALIZERS_VERSION} AS codegen
 COPY lib/external/serializers/proto /in
 RUN generate --out /out
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 COPY --from=codegen /out /app/generated
 ```
 
