@@ -1,0 +1,16 @@
+.git
+.github
+.venv
+.vscode
+.idea
+.generated
+.test
+.proto
+.pytest_cache
+__pycache__
+tests
+serializers
+scripts/.proto_sources.txt
+build
+bin
+out

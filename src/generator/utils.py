@@ -111,12 +111,15 @@ def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, 
         with open(filepath, "r") as file:
             schema = Parser().parse(file.read())
             
-        filepath = filepath.split('proto/')[1]
-        filename = filepath.split('/')[-1]
-        filepath = filepath.split(filename)[0]
-        filename = filename.split('.proto')[0]
+        # Path relative to the input folder, whatever its name (e.g. /in in
+        # the Docker image): "can/can_error.proto" -> filepath "can/",
+        # filename "can_error". The templates expect the trailing "/".
+        relpath = os.path.relpath(filepath, directory_path).replace(os.sep, '/')
+        filepath, _, filename = relpath.rpartition('/')
+        filepath = f'{filepath}/' if filepath else ''
+        filename = filename[:-len('.proto')]
         
-        # Throw error if package has not set
+        # Throw error if package has not set
         package = get_package(schema.file_elements)
         if package is None:
             print(f'No package found for file {filename}.proto, aborting')
@@ -128,13 +131,13 @@ def load_files(directory_path: str) -> (list[(str, (Package, File))], dict[str, 
             print(f'Multiple package definition for file {filename}.proto, aborting...')
             exit(1)
 
-        # Append schema and definitions to the lists
+        # Append schema and definitions to the lists
         files.append((filename, filepath, package, schema))
         
         if not package.name in package_definitions:
             package_definitions[package.name] = []
 
-        # Check multiple definitions
+        # Check multiple definitions
         for element in schema.file_elements:
             if element is None:
                 schema.file_elements.remove(element)

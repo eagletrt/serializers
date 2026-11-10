@@ -1,6 +1,8 @@
 proto-schema-parser == 0.3.0
 Jinja2 >= 3.1.0
-protobuf>=3.20.0
+# Same runtime as the services, and the release that matches the protoc in the
+# Dockerfile (protoc 35.x <-> protobuf 7.35.x). Change both together.
+protobuf == 7.35.1
 pytest
 enums
 pre-commit

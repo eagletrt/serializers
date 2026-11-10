@@ -1,5 +1,8 @@
 name: Run Tests
 
+# The tests run inside the generator image, the same one that consumers use, so
+# the generator is always tested with the toolchain it ships with.
+
 on:
     push:
         branches:
@@ -22,28 +25,11 @@ jobs:
                   repository: "eagletrt/telemetry-serializers"
                   path: telemetry-serializers
 
-            - name: Setup Python 3.12
-              uses: actions/setup-python@v4
-              with:
-                  python-version: 3.12
-                  cache: "pip"
+            - name: Build the generator image
+              run: docker build -t serializers:test .
 
-            - name: Install 'protoc'
+            - name: Generate, compile and test
               run: |
-                  DEBIAN_FRONTEND=noninteractive
-                  sudo apt update
-                  sudo apt install -y protobuf-compiler
-
-            - name: Install dependencies
-              run: |
-                pip install protobuf==3.20.0
-                pip install -r requirements.txt
-
-            - name: Generate code
-              run: python3 src/generator/main.py telemetry-serializers/proto/ serializers
-
-            - name: Genereate *.pb2.py files
-              run: chmod +x ./scripts/compile_proto.sh && ./scripts/compile_proto.sh
-
-            - name: Run tests
-              run: pytest --verbose
+                  docker run --rm \
+                      -v "$PWD/telemetry-serializers/proto:/in:ro" \
+                      serializers:test check

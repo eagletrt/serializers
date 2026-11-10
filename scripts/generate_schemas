@@ -1,4 +1,7 @@
 #!/bin/bash
+# Generate a JSON Schema for every .proto file under <proto_dir>, at any depth,
+# into <output_dir>/schemas. Stops at the first file protoc cannot process.
+set -euo pipefail
 
 # Check if arguments are provided
 if [ $# -ne 2 ]; then
@@ -6,33 +9,41 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-EXECUTABLE_PATH=~/go/bin/protoc-gen-jsonschema
-PROTO_FILES=$(ls -m $1 | grep -o '[^ ]*\.proto' | tr ', ' ' ')
+PROTO_DIR=$1
+OUTPUT_DIR=$2
+
+# The Docker image ships the plugin in the PATH; otherwise use the Go bin folder.
+EXECUTABLE_PATH=${PROTOC_GEN_JSONSCHEMA:-$(command -v protoc-gen-jsonschema || echo ~/go/bin/protoc-gen-jsonschema)}
+JSONSCHEMA_REF=${JSONSCHEMA_REF:-73d5723042b812758310ea5ef661a273f0faa9ed}
 
 # Check if file exists
 if [ ! -f "$EXECUTABLE_PATH" ]; then
     echo "Installing 'protoc-gen-jsonschema'..."
-    go install github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@latest
+    go install "github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@$JSONSCHEMA_REF"
+    EXECUTABLE_PATH="$(go env GOBIN)"
+    EXECUTABLE_PATH="${EXECUTABLE_PATH:-$(go env GOPATH)/bin}/protoc-gen-jsonschema"
 fi
 
-mkdir -p $2/schemas
+mkdir -p "$OUTPUT_DIR/schemas"
 
-# Generate schemas in $2/schemas from proto files in $1
-for file in $1/*; do
-    if [ -d "$file" ]; then
-        for subfile in $file/*; do
-            if [ -f "$subfile" ]; then
-                protoc \
-                    --plugin=$EXECUTABLE_PATH \
-                    --proto_path=$1 \
-                    --jsonschema_out=$2/schemas \
-                    --jsonschema_opt=enforce_oneof \
-                    --jsonschema_opt=file_extension=schema.json \
-                    --jsonschema_opt=disallow_additional_properties \
-                    --jsonschema_opt=disallow_bigints_as_strings \
-                    --jsonschema_opt=all_fields_required \
-                    $subfile
-            fi
-        done
-    fi
-done
+# Generate schemas in $OUTPUT_DIR/schemas from proto files in $PROTO_DIR
+count=0
+while IFS= read -r file; do
+    protoc \
+        --plugin="$EXECUTABLE_PATH" \
+        --proto_path="$PROTO_DIR" \
+        --jsonschema_out="$OUTPUT_DIR/schemas" \
+        --jsonschema_opt=enforce_oneof \
+        --jsonschema_opt=file_extension=schema.json \
+        --jsonschema_opt=disallow_additional_properties \
+        --jsonschema_opt=disallow_bigints_as_strings \
+        --jsonschema_opt=all_fields_required \
+        "$file"
+    count=$((count + 1))
+done < <(find "$PROTO_DIR" -type f -name '*.proto' | LC_ALL=C sort)
+
+if [ "$count" -eq 0 ]; then
+    echo "error: no .proto files in '$PROTO_DIR'" >&2
+    exit 1
+fi
+echo "[schemas] generated the JSON Schemas of $count .proto files in $OUTPUT_DIR/schemas"
