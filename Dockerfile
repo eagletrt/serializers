@@ -13,10 +13,20 @@
 # ---- Stage 1: protoc-gen-jsonschema, built at a pinned commit ----------------
 # The project has no semver tags that Go can resolve, so `@latest` is a moving
 # target: pin the commit instead (this one is the HEAD of 2024-02-12).
-FROM golang:1.24-bookworm AS jsonschema
+#
+# The stage runs on the build machine and cross-compiles for the target
+# platform, so the arm64 variant is not built under QEMU emulation. With
+# CGO_ENABLED=0 the binary is static. `go install` puts cross-compiled binaries
+# in bin/<os>_<arch>/, hence the `find`.
+FROM --platform=$BUILDPLATFORM golang:1.24-bookworm AS jsonschema
+ARG TARGETOS
+ARG TARGETARCH
 ARG JSONSCHEMA_REF=73d5723042b812758310ea5ef661a273f0faa9ed
-RUN GOBIN=/out go install \
-    github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@${JSONSCHEMA_REF}
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go install \
+        github.com/chrusty/protoc-gen-jsonschema/cmd/protoc-gen-jsonschema@${JSONSCHEMA_REF} \
+    && mkdir /out \
+    && find "$(go env GOPATH)/bin" -type f -name protoc-gen-jsonschema -exec mv {} /out/ \; \
+    && test -x /out/protoc-gen-jsonschema
 
 # ---- Stage 2: generator ------------------------------------------------------
 FROM python:3.12-slim-bookworm
@@ -44,9 +54,10 @@ COPY docker/serializers.sh /usr/local/bin/serializers
 RUN chmod +x /usr/local/bin/serializers scripts/compile_proto.sh scripts/generate_pb scripts/generate_schemas \
     && ln -s serializers /usr/local/bin/generate \
     && ln -s serializers /usr/local/bin/check \
-    # The container may run as any user (docker run --user): the generator
-    # writes its working files next to the sources.
-    && chmod -R a+rwX /opt/serializers
+    && ln -s serializers /usr/local/bin/clean
+# /opt/serializers stays read-only: every run works in a temporary copy, so the
+# container can run as any user (docker run --user) and with --read-only
+# (plus a tmpfs on /tmp).
 
 ARG VERSION=dev
 ENV SERIALIZERS_VERSION=${VERSION} \
