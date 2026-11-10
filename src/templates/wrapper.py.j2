@@ -48,8 +48,7 @@ class {{ element.name }}:
         for key, val in self.{{ field.name }}.items():
         {%- if field.value_type in package_definitions[package.name] %}
             val._populate_proto()
-            tmp = self._proto_message.{{ field.name }}.setdefault(key)
-            tmp.CopyFrom(val._proto_message)
+            self._proto_message.{{ field.name }}[key].CopyFrom(val._proto_message)
         {%- else %}
             self._proto_message.{{ field.name }}[key] = val
         {%- endif %}
