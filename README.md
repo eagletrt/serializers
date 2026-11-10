@@ -135,3 +135,51 @@ int main()
 - [ ] Nested types
 - [x] OneOf
 - [ ] Custom options
+
+## Docker image
+
+The generator ships as a Docker image with the whole toolchain pinned
+(`protoc`, `protoc-gen-jsonschema`, Python and its dependencies), so the output
+only depends on the image version and on the `.proto` files.
+
+```sh
+docker run --rm -v $PWD/proto:/in:ro -v $PWD/out:/out \
+  ghcr.io/eagletrt/serializers:1.0.0 generate
+```
+
+- `generate [--in DIR] [--out DIR]` writes the C++/Python wrappers, the CMake
+  project and the JSON Schemas in `--out` (default `/in` and `/out`). A folder
+  that a previous run created (it holds a `.serializers-version` file) is
+  cleaned first; any other folder is never deleted.
+- `check [--in DIR]` generates the code, compiles the protos and runs the
+  generated tests. This is what the CI runs.
+
+`generate` and `check` are also commands inside the image, so a service can use
+it in a multi-stage build:
+
+```dockerfile
+FROM ghcr.io/eagletrt/serializers:1.0.0 AS codegen
+COPY lib/external/serializers/proto /in
+RUN generate --out /out
+
+FROM python:3.12-slim
+COPY --from=codegen /out /app/generated
+```
+
+The image is published for `linux/amd64` and `linux/arm64`, so Docker picks the
+native variant on Intel and Apple Silicon Macs, Windows and Linux.
+
+### Releasing
+
+The image is published by `.github/workflows/docker.yaml` when a tag is pushed:
+
+```sh
+git tag v1.0.0 && git push origin v1.0.0   # publishes ghcr.io/eagletrt/serializers:1.0.0
+```
+
+To build and try it locally:
+
+```sh
+docker build -t serializers:dev .
+docker run --rm -v $PWD/../telemetry-serializers/proto:/in:ro serializers:dev check
+```
