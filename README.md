@@ -144,21 +144,34 @@ only depends on the image version and on the `.proto` files.
 
 ```sh
 docker run --rm -v $PWD/proto:/in:ro -v $PWD/out:/out \
-  ghcr.io/eagletrt/serializers:1.0.0 generate
+  ghcr.io/eagletrt/serializers:<version> generate
 ```
 
-- `generate [--in DIR] [--out DIR]` writes the C++/Python wrappers, the CMake
-  project and the JSON Schemas in `--out` (default `/in` and `/out`). A folder
-  that a previous run created (it holds a `.serializers-version` file) is
-  cleaned first; any other folder is never deleted.
+Replace `<version>` with a published version (e.g. `1.0.0`). `latest` and
+`<major>.<minor>` tags exist too, but projects should pin the exact version so
+that the generated code only changes when they decide to.
+
+- `generate [--in DIR] [--out DIR] [--force]` writes the C++/Python wrappers,
+  the CMake project and the JSON Schemas in `--out` (defaults: `/in` and
+  `/out`). The output folder must be empty or created by a previous run (it
+  holds `.serializers-version`); any other non-empty folder is refused unless
+  `--force` is given. The files written are listed in `.serializers-manifest`,
+  and the next run deletes only those, so files you add to the folder are never
+  removed.
 - `check [--in DIR]` generates the code, compiles the protos and runs the
   generated tests. This is what the CI runs.
+- `clean [--out DIR]` deletes the files listed in `.serializers-manifest`.
 
-`generate` and `check` are also commands inside the image, so a service can use
-it in a multi-stage build:
+The image never writes into its own files (each run works in a temporary
+copy), so it can run as any user (`--user "$(id -u):$(id -g)"`, so that the
+generated files are not owned by root) and with `--read-only`.
+
+`generate`, `check` and `clean` are also commands inside the image, so a
+service can use it in a multi-stage build:
 
 ```dockerfile
-FROM ghcr.io/eagletrt/serializers:1.0.0 AS codegen
+ARG SERIALIZERS_VERSION
+FROM ghcr.io/eagletrt/serializers:${SERIALIZERS_VERSION} AS codegen
 COPY lib/external/serializers/proto /in
 RUN generate --out /out
 
@@ -171,11 +184,16 @@ native variant on Intel and Apple Silicon Macs, Windows and Linux.
 
 ### Releasing
 
-The image is published by `.github/workflows/docker.yaml` when a tag is pushed:
+The image is published by `.github/workflows/docker.yaml` when a tag is pushed.
+The workflow first runs `check` with the image on both platforms against the
+protos of `eagletrt/telemetry-serializers`, and publishes only if it passes:
 
 ```sh
-git tag v1.0.0 && git push origin v1.0.0   # publishes ghcr.io/eagletrt/serializers:1.0.0
+git tag v1.0.0 && git push origin v1.0.0   # publishes 1.0.0, 1.0 and latest
 ```
+
+After the first release, make the `serializers` package public in the
+organization's package settings, so that it can be pulled without logging in.
 
 To build and try it locally:
 
@@ -183,3 +201,8 @@ To build and try it locally:
 docker build -t serializers:dev .
 docker run --rm -v $PWD/../telemetry-serializers/proto:/in:ro serializers:dev check
 ```
+
+## Development
+
+The generator no longer installs the git hooks by itself: run
+`pre-commit install` once after cloning the repository.
